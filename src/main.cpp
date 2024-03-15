@@ -92,6 +92,9 @@ void Pressure(const tN2kMsg &N2kMsg);
 void UserDatumSettings(const tN2kMsg &N2kMsg);
 void GNSSSatsInView(const tN2kMsg &N2kMsg);
 
+
+
+
 tNMEA2000Handler NMEA2000Handlers[] = {
     {126992L, &SystemTime},
     {127245L, &Rudder},
@@ -150,6 +153,30 @@ void recvMsg(uint8_t *data, size_t len){
   }
 }
 
+
+template <typename T>
+void Print (T msg) {
+    OutputStream->print(msg);
+    WebSerial.print(msg);
+}
+template <typename T>
+void Println (T msg) {
+    OutputStream->println(msg);
+    WebSerial.println(msg);
+}
+
+template <typename T>
+void Print (T msg, int8_t desim) {
+    OutputStream->print(msg, desim);
+    WebSerial.print(msg);
+}
+
+void Println() {
+    OutputStream->println();
+    WebSerial.println();
+}
+
+
 void setup()
 {
 
@@ -192,7 +219,7 @@ void setup()
     NMEA2000.SetMsgHandler(HandleNMEA2000Msg);
     //  NMEA2000.SetN2kCANMsgBufSize(2);
     NMEA2000.Open();
-    OutputStream->print("Running...");
+    Print("Running...");
 
     SerialBT.begin("N2K Insight");
     Serial.println("Bluetooth Started! Ready to pair...");
@@ -202,36 +229,37 @@ void setup()
 template <typename T>
 void PrintLabelValWithConversionCheckUnDef(const char *label, T val, double (*ConvFunc)(double val) = 0, bool AddLf = false, int8_t Desim = -1)
 {
-    OutputStream->print(label);
+    Print(label);
     if (!N2kIsNA(val))
     {
         if (Desim < 0)
         {
             if (ConvFunc)
             {
-                OutputStream->print(ConvFunc(val));
+                Print(ConvFunc(val));
             }
             else
             {
-                OutputStream->print(val);
+                Print(val);
+                WebSerial.print(val);
             }
         }
         else
         {
             if (ConvFunc)
             {
-                OutputStream->print(ConvFunc(val), Desim);
+                Print(ConvFunc(val), Desim);
             }
             else
             {
-                OutputStream->print(val, Desim);
+                Print(val, Desim);
             }
         }
     }
     else
-        OutputStream->print("not available");
+        Print("not available");
     if (AddLf)
-        OutputStream->println();
+        Println();
 }
 
 //*****************************************************************************
@@ -244,17 +272,17 @@ void SystemTime(const tN2kMsg &N2kMsg)
 
     if (ParseN2kSystemTime(N2kMsg, SID, SystemDate, SystemTime, TimeSource))
     {
-        OutputStream->println("System time:");
+        Println("System time:");
         PrintLabelValWithConversionCheckUnDef("  SID: ", SID, 0, true);
         PrintLabelValWithConversionCheckUnDef("  days since 1.1.1970: ", SystemDate, 0, true);
         PrintLabelValWithConversionCheckUnDef("  seconds since midnight: ", SystemTime, 0, true);
-        OutputStream->print("  time source: ");
+        Print("  time source: ");
         PrintN2kEnumType(TimeSource, OutputStream);
     }
     else
     {
-        OutputStream->print("Failed to parse PGN: ");
-        OutputStream->println(N2kMsg.PGN);
+        Print("Failed to parse PGN: ");
+        Println(N2kMsg.PGN);
     }
 }
 
@@ -270,14 +298,14 @@ void Rudder(const tN2kMsg &N2kMsg)
     {
         PrintLabelValWithConversionCheckUnDef("Rudder: ", Instance, 0, true);
         PrintLabelValWithConversionCheckUnDef("  position (deg): ", RudderPosition, &RadToDeg, true);
-        OutputStream->print("  direction order: ");
+        Print("  direction order: ");
         PrintN2kEnumType(RudderDirectionOrder, OutputStream);
         PrintLabelValWithConversionCheckUnDef("  angle order (deg): ", AngleOrder, &RadToDeg, true);
     }
     else
     {
-        OutputStream->print("Failed to parse PGN: ");
-        OutputStream->println(N2kMsg.PGN);
+        Print("Failed to parse PGN: ");
+        Println(N2kMsg.PGN);
     }
 }
 
@@ -298,8 +326,8 @@ void EngineRapid(const tN2kMsg &N2kMsg)
     }
     else
     {
-        OutputStream->print("Failed to parse PGN: ");
-        OutputStream->println(N2kMsg.PGN);
+        Print("Failed to parse PGN: ");
+        Println(N2kMsg.PGN);
     }
 }
 
@@ -339,8 +367,8 @@ void EngineDynamicParameters(const tN2kMsg &N2kMsg)
     }
     else
     {
-        OutputStream->print("Failed to parse PGN: ");
-        OutputStream->println(N2kMsg.PGN);
+        Print("Failed to parse PGN: ");
+        Println(N2kMsg.PGN);
     }
 }
 
@@ -356,7 +384,7 @@ void TransmissionParameters(const tN2kMsg &N2kMsg)
     if (ParseN2kTransmissionParameters(N2kMsg, EngineInstance, TransmissionGear, OilPressure, OilTemperature, DiscreteStatus1))
     {
         PrintLabelValWithConversionCheckUnDef("Transmission params: ", EngineInstance, 0, true);
-        OutputStream->print("  gear: ");
+        Print("  gear: ");
         PrintN2kEnumType(TransmissionGear, OutputStream);
         PrintLabelValWithConversionCheckUnDef("  oil pressure (Pa): ", OilPressure, 0, true);
         PrintLabelValWithConversionCheckUnDef("  oil temperature (C): ", OilTemperature, &KelvinToC, true);
@@ -364,8 +392,8 @@ void TransmissionParameters(const tN2kMsg &N2kMsg)
     }
     else
     {
-        OutputStream->print("Failed to parse PGN: ");
-        OutputStream->println(N2kMsg.PGN);
+        Print("Failed to parse PGN: ");
+        Println(N2kMsg.PGN);
     }
 }
 
@@ -388,8 +416,8 @@ void TripFuelConsumption(const tN2kMsg &N2kMsg)
     }
     else
     {
-        OutputStream->print("Failed to parse PGN: ");
-        OutputStream->println(N2kMsg.PGN);
+        Print("Failed to parse PGN: ");
+        Println(N2kMsg.PGN);
     }
 }
 
@@ -404,9 +432,9 @@ void Heading(const tN2kMsg &N2kMsg)
 
     if (ParseN2kHeading(N2kMsg, SID, Heading, Deviation, Variation, HeadingReference))
     {
-        OutputStream->println("Heading:");
+        Println("Heading:");
         PrintLabelValWithConversionCheckUnDef("  SID: ", SID, 0, true);
-        OutputStream->print("  reference: ");
+        Print("  reference: ");
         PrintN2kEnumType(HeadingReference, OutputStream);
         PrintLabelValWithConversionCheckUnDef("  Heading (deg): ", Heading, &RadToDeg, true);
         PrintLabelValWithConversionCheckUnDef("  Deviation (deg): ", Deviation, &RadToDeg, true);
@@ -414,8 +442,8 @@ void Heading(const tN2kMsg &N2kMsg)
     }
     else
     {
-        OutputStream->print("Failed to parse PGN: ");
-        OutputStream->println(N2kMsg.PGN);
+        Print("Failed to parse PGN: ");
+        Println(N2kMsg.PGN);
     }
 }
 
@@ -429,17 +457,17 @@ void COGSOG(const tN2kMsg &N2kMsg)
 
     if (ParseN2kCOGSOGRapid(N2kMsg, SID, HeadingReference, COG, SOG))
     {
-        OutputStream->println("COG/SOG:");
+        Println("COG/SOG:");
         PrintLabelValWithConversionCheckUnDef("  SID: ", SID, 0, true);
-        OutputStream->print("  reference: ");
+        Print("  reference: ");
         PrintN2kEnumType(HeadingReference, OutputStream);
         PrintLabelValWithConversionCheckUnDef("  COG (deg): ", COG, &RadToDeg, true);
         PrintLabelValWithConversionCheckUnDef("  SOG (m/s): ", SOG, 0, true);
     }
     else
     {
-        OutputStream->print("Failed to parse PGN: ");
-        OutputStream->println(N2kMsg.PGN);
+        Print("Failed to parse PGN: ");
+        Println(N2kMsg.PGN);
     }
 }
 
@@ -470,16 +498,16 @@ void GNSS(const tN2kMsg &N2kMsg)
                      nReferenceStations, ReferenceStationType, ReferenceSationID,
                      AgeOfCorrection))
     {
-        OutputStream->println("GNSS info:");
+        Println("GNSS info:");
         PrintLabelValWithConversionCheckUnDef("  SID: ", SID, 0, true);
         PrintLabelValWithConversionCheckUnDef("  days since 1.1.1970: ", DaysSince1970, 0, true);
         PrintLabelValWithConversionCheckUnDef("  seconds since midnight: ", SecondsSinceMidnight, 0, true);
         PrintLabelValWithConversionCheckUnDef("  latitude: ", Latitude, 0, true, 9);
         PrintLabelValWithConversionCheckUnDef("  longitude: ", Longitude, 0, true, 9);
         PrintLabelValWithConversionCheckUnDef("  altitude: (m): ", Altitude, 0, true);
-        OutputStream->print("  GNSS type: ");
+        Print("  GNSS type: ");
         PrintN2kEnumType(GNSStype, OutputStream);
-        OutputStream->print("  GNSS method: ");
+        Print("  GNSS method: ");
         PrintN2kEnumType(GNSSmethod, OutputStream);
         PrintLabelValWithConversionCheckUnDef("  satellite count: ", nSatellites, 0, true);
         PrintLabelValWithConversionCheckUnDef("  HDOP: ", HDOP, 0, true);
@@ -489,8 +517,8 @@ void GNSS(const tN2kMsg &N2kMsg)
     }
     else
     {
-        OutputStream->print("Failed to parse PGN: ");
-        OutputStream->println(N2kMsg.PGN);
+        Print("Failed to parse PGN: ");
+        Println(N2kMsg.PGN);
     }
 }
 
@@ -502,7 +530,7 @@ void UserDatumSettings(const tN2kMsg &N2kMsg)
     int Index = 0;
     double val;
 
-    OutputStream->println("User Datum Settings: ");
+    Println("User Datum Settings: ");
     val = N2kMsg.Get4ByteDouble(1e-2, Index);
     PrintLabelValWithConversionCheckUnDef("  delta x (m): ", val, 0, true);
     val = N2kMsg.Get4ByteDouble(1e-2, Index);
@@ -529,21 +557,21 @@ void GNSSSatsInView(const tN2kMsg &N2kMsg)
 
     if (ParseN2kPGNSatellitesInView(N2kMsg, SID, Mode, NumberOfSVs))
     {
-        OutputStream->println("Satellites in view: ");
-        OutputStream->print("  mode: ");
-        OutputStream->println(Mode);
-        OutputStream->print("  number of satellites: ");
-        OutputStream->println(NumberOfSVs);
+        Println("Satellites in view: ");
+        Print("  mode: ");
+        Println(Mode);
+        Print("  number of satellites: ");
+        Println(NumberOfSVs);
         for (uint8_t i = 0; i < NumberOfSVs && ParseN2kPGNSatellitesInView(N2kMsg, i, SatelliteInfo); i++)
         {
-            OutputStream->print("  Satellite PRN: ");
-            OutputStream->println(SatelliteInfo.PRN);
+            Print("  Satellite PRN: ");
+            Println(SatelliteInfo.PRN);
             PrintLabelValWithConversionCheckUnDef("    elevation: ", SatelliteInfo.Elevation, &RadToDeg, true, 1);
             PrintLabelValWithConversionCheckUnDef("    azimuth:   ", SatelliteInfo.Azimuth, &RadToDeg, true, 1);
             PrintLabelValWithConversionCheckUnDef("    SNR:       ", SatelliteInfo.SNR, 0, true, 1);
             PrintLabelValWithConversionCheckUnDef("    residuals: ", SatelliteInfo.RangeResiduals, 0, true, 1);
-            OutputStream->print("    status: ");
-            OutputStream->println(SatelliteInfo.UsageStatus);
+            Print("    status: ");
+            Println(SatelliteInfo.UsageStatus);
         }
     }
 }
@@ -557,15 +585,15 @@ void LocalOffset(const tN2kMsg &N2kMsg)
 
     if (ParseN2kLocalOffset(N2kMsg, SystemDate, SystemTime, Offset))
     {
-        OutputStream->println("Date,time and local offset: ");
+        Println("Date,time and local offset: ");
         PrintLabelValWithConversionCheckUnDef("  days since 1.1.1970: ", SystemDate, 0, true);
         PrintLabelValWithConversionCheckUnDef("  seconds since midnight: ", SystemTime, 0, true);
         PrintLabelValWithConversionCheckUnDef("  local offset (min): ", Offset, 0, true);
     }
     else
     {
-        OutputStream->print("Failed to parse PGN: ");
-        OutputStream->println(N2kMsg.PGN);
+        Print("Failed to parse PGN: ");
+        Println(N2kMsg.PGN);
     }
 }
 
@@ -585,8 +613,8 @@ void OutsideEnvironmental(const tN2kMsg &N2kMsg)
     }
     else
     {
-        OutputStream->print("Failed to parse PGN: ");
-        OutputStream->println(N2kMsg.PGN);
+        Print("Failed to parse PGN: ");
+        Println(N2kMsg.PGN);
     }
 }
 
@@ -601,15 +629,15 @@ void Temperature(const tN2kMsg &N2kMsg)
 
     if (ParseN2kTemperature(N2kMsg, SID, TempInstance, TempSource, ActualTemperature, SetTemperature))
     {
-        OutputStream->print("Temperature source: ");
+        Print("Temperature source: ");
         PrintN2kEnumType(TempSource, OutputStream, false);
         PrintLabelValWithConversionCheckUnDef(", actual temperature: ", ActualTemperature, &KelvinToC);
         PrintLabelValWithConversionCheckUnDef(", set temperature: ", SetTemperature, &KelvinToC, true);
     }
     else
     {
-        OutputStream->print("Failed to parse PGN: ");
-        OutputStream->println(N2kMsg.PGN);
+        Print("Failed to parse PGN: ");
+        Println(N2kMsg.PGN);
     }
 }
 
@@ -623,15 +651,15 @@ void Humidity(const tN2kMsg &N2kMsg)
 
     if (ParseN2kHumidity(N2kMsg, SID, Instance, HumiditySource, ActualHumidity, SetHumidity))
     {
-        OutputStream->print("Humidity source: ");
+        Print("Humidity source: ");
         PrintN2kEnumType(HumiditySource, OutputStream, false);
         PrintLabelValWithConversionCheckUnDef(", humidity: ", ActualHumidity, 0, false);
         PrintLabelValWithConversionCheckUnDef(", set humidity: ", SetHumidity, 0, true);
     }
     else
     {
-        OutputStream->print("Failed to parse PGN: ");
-        OutputStream->println(N2kMsg.PGN);
+        Print("Failed to parse PGN: ");
+        Println(N2kMsg.PGN);
     }
 }
 
@@ -645,14 +673,14 @@ void Pressure(const tN2kMsg &N2kMsg)
 
     if (ParseN2kPressure(N2kMsg, SID, Instance, PressureSource, ActualPressure))
     {
-        OutputStream->print("Pressure source: ");
+        Print("Pressure source: ");
         PrintN2kEnumType(PressureSource, OutputStream, false);
         PrintLabelValWithConversionCheckUnDef(", pressure: ", ActualPressure, &PascalTomBar, true);
     }
     else
     {
-        OutputStream->print("Failed to parse PGN: ");
-        OutputStream->println(N2kMsg.PGN);
+        Print("Failed to parse PGN: ");
+        Println(N2kMsg.PGN);
     }
 }
 
@@ -667,15 +695,15 @@ void TemperatureExt(const tN2kMsg &N2kMsg)
 
     if (ParseN2kTemperatureExt(N2kMsg, SID, TempInstance, TempSource, ActualTemperature, SetTemperature))
     {
-        OutputStream->print("Temperature source: ");
+        Print("Temperature source: ");
         PrintN2kEnumType(TempSource, OutputStream, false);
         PrintLabelValWithConversionCheckUnDef(", actual temperature: ", ActualTemperature, &KelvinToC);
         PrintLabelValWithConversionCheckUnDef(", set temperature: ", SetTemperature, &KelvinToC, true);
     }
     else
     {
-        OutputStream->print("Failed to parse PGN: ");
-        OutputStream->println(N2kMsg.PGN);
+        Print("Failed to parse PGN: ");
+        Println(N2kMsg.PGN);
     }
 }
 
@@ -695,13 +723,13 @@ void BatteryConfigurationStatus(const tN2kMsg &N2kMsg)
     if (ParseN2kBatConf(N2kMsg, BatInstance, BatType, SupportsEqual, BatNominalVoltage, BatChemistry, BatCapacity, BatTemperatureCoefficient, PeukertExponent, ChargeEfficiencyFactor))
     {
         PrintLabelValWithConversionCheckUnDef("Battery instance: ", BatInstance, 0, true);
-        OutputStream->print("  - type: ");
+        Print("  - type: ");
         PrintN2kEnumType(BatType, OutputStream);
-        OutputStream->print("  - support equal.: ");
+        Print("  - support equal.: ");
         PrintN2kEnumType(SupportsEqual, OutputStream);
-        OutputStream->print("  - nominal voltage: ");
+        Print("  - nominal voltage: ");
         PrintN2kEnumType(BatNominalVoltage, OutputStream);
-        OutputStream->print("  - chemistry: ");
+        Print("  - chemistry: ");
         PrintN2kEnumType(BatChemistry, OutputStream);
         PrintLabelValWithConversionCheckUnDef("  - capacity (Ah): ", BatCapacity, &CoulombToAh, true);
         PrintLabelValWithConversionCheckUnDef("  - temperature coefficient (%): ", BatTemperatureCoefficient, 0, true);
@@ -710,8 +738,8 @@ void BatteryConfigurationStatus(const tN2kMsg &N2kMsg)
     }
     else
     {
-        OutputStream->print("Failed to parse PGN: ");
-        OutputStream->println(N2kMsg.PGN);
+        Print("Failed to parse PGN: ");
+        Println(N2kMsg.PGN);
     }
 }
 
@@ -729,25 +757,25 @@ void DCStatus(const tN2kMsg &N2kMsg)
 
     if (ParseN2kDCStatus(N2kMsg, SID, DCInstance, DCType, StateOfCharge, StateOfHealth, TimeRemaining, RippleVoltage, Capacity))
     {
-        OutputStream->print("DC instance: ");
-        OutputStream->println(DCInstance);
-        OutputStream->print("  - type: ");
+        Print("DC instance: ");
+        Println(DCInstance);
+        Print("  - type: ");
         PrintN2kEnumType(DCType, OutputStream);
-        OutputStream->print("  - state of charge (%): ");
-        OutputStream->println(StateOfCharge);
-        OutputStream->print("  - state of health (%): ");
-        OutputStream->println(StateOfHealth);
-        OutputStream->print("  - time remaining (h): ");
-        OutputStream->println(TimeRemaining / 60);
-        OutputStream->print("  - ripple voltage: ");
-        OutputStream->println(RippleVoltage);
-        OutputStream->print("  - capacity: ");
-        OutputStream->println(Capacity);
+        Print("  - state of charge (%): ");
+        Println(StateOfCharge);
+        Print("  - state of health (%): ");
+        Println(StateOfHealth);
+        Print("  - time remaining (h): ");
+        Println(TimeRemaining / 60);
+        Print("  - ripple voltage: ");
+        Println(RippleVoltage);
+        Print("  - capacity: ");
+        Println(Capacity);
     }
     else
     {
-        OutputStream->print("Failed to parse PGN: ");
-        OutputStream->println(N2kMsg.PGN);
+        Print("Failed to parse PGN: ");
+        Println(N2kMsg.PGN);
     }
 }
 
@@ -761,10 +789,10 @@ void Speed(const tN2kMsg &N2kMsg)
 
     if (ParseN2kBoatSpeed(N2kMsg, SID, SOW, SOG, SWRT))
     {
-        OutputStream->print("Boat speed:");
+        Print("Boat speed:");
         PrintLabelValWithConversionCheckUnDef(" SOW:", N2kIsNA(SOW) ? SOW : msToKnots(SOW));
         PrintLabelValWithConversionCheckUnDef(", SOG:", N2kIsNA(SOG) ? SOG : msToKnots(SOG));
-        OutputStream->print(", ");
+        Print(", ");
         PrintN2kEnumType(SWRT, OutputStream, true);
     }
 }
@@ -783,30 +811,30 @@ void WaterDepth(const tN2kMsg &N2kMsg)
             PrintLabelValWithConversionCheckUnDef("Depth below transducer", DepthBelowTransducer);
             if (N2kIsNA(Offset))
             {
-                OutputStream->println(", offset not available");
+                Println(", offset not available");
             }
             else
             {
-                OutputStream->println(", offset=0");
+                Println(", offset=0");
             }
         }
         else
         {
             if (Offset > 0)
             {
-                OutputStream->print("Water depth:");
+                Print("Water depth:");
             }
             else
             {
-                OutputStream->print("Depth below keel:");
+                Print("Depth below keel:");
             }
             if (!N2kIsNA(DepthBelowTransducer))
             {
-                OutputStream->println(DepthBelowTransducer + Offset);
+                Println(DepthBelowTransducer + Offset);
             }
             else
             {
-                OutputStream->println(" not available");
+                Println(" not available");
             }
         }
     }
@@ -820,7 +848,7 @@ void printLLNumber(Stream *OutputStream, unsigned long long n, uint8_t base = 10
 
     if (n == 0)
     {
-        OutputStream->print('0');
+        Print('0');
         return;
     }
 
@@ -831,7 +859,7 @@ void printLLNumber(Stream *OutputStream, unsigned long long n, uint8_t base = 10
     }
 
     for (; i > 0; i--)
-        OutputStream->print((char)(buf[i - 1] < 10 ? '0' + buf[i - 1] : 'A' + buf[i - 1] - 10));
+        Print((char)(buf[i - 1] < 10 ? '0' + buf[i - 1] : 'A' + buf[i - 1] - 10));
 }
 
 //*****************************************************************************
@@ -842,17 +870,17 @@ void BinaryStatusFull(const tN2kMsg &N2kMsg)
 
     if (ParseN2kBinaryStatus(N2kMsg, BankInstance, BankStatus))
     {
-        OutputStream->print("Binary status for bank ");
-        OutputStream->print(BankInstance);
-        OutputStream->println(":");
-        OutputStream->print("  "); // printLLNumber(OutputStream,BankStatus,16);
+        Print("Binary status for bank ");
+        Print(BankInstance);
+        Println(":");
+        Print("  "); // printLLNumber(OutputStream,BankStatus,16);
         for (uint8_t i = 1; i <= 28; i++)
         {
             if (i > 1)
-                OutputStream->print(",");
+                Print(",");
             PrintN2kEnumType(N2kGetStatusOnBinaryStatus(BankStatus, i), OutputStream, false);
         }
-        OutputStream->println();
+        Println();
     }
 }
 
@@ -870,18 +898,18 @@ void BinaryStatus(const tN2kMsg &N2kMsg)
         }
         else
         {
-            OutputStream->print("Binary status for bank ");
-            OutputStream->print(BankInstance);
-            OutputStream->println(":");
-            OutputStream->print("  Status1=");
+            Print("Binary status for bank ");
+            Print(BankInstance);
+            Println(":");
+            Print("  Status1=");
             PrintN2kEnumType(Status1, OutputStream, false);
-            OutputStream->print(", Status2=");
+            Print(", Status2=");
             PrintN2kEnumType(Status2, OutputStream, false);
-            OutputStream->print(", Status3=");
+            Print(", Status3=");
             PrintN2kEnumType(Status3, OutputStream, false);
-            OutputStream->print(", Status4=");
+            Print(", Status4=");
             PrintN2kEnumType(Status4, OutputStream, false);
-            OutputStream->println();
+            Println();
         }
     }
 }
@@ -899,40 +927,40 @@ void FluidLevel(const tN2kMsg &N2kMsg)
         switch (FluidType)
         {
         case N2kft_Fuel:
-            OutputStream->print("Fuel level :");
+            Print("Fuel level :");
             break;
         case N2kft_Water:
-            OutputStream->print("Water level :");
+            Print("Water level :");
             break;
         case N2kft_GrayWater:
-            OutputStream->print("Gray water level :");
+            Print("Gray water level :");
             break;
         case N2kft_LiveWell:
-            OutputStream->print("Live well level :");
+            Print("Live well level :");
             break;
         case N2kft_Oil:
-            OutputStream->print("Oil level :");
+            Print("Oil level :");
             break;
         case N2kft_BlackWater:
-            OutputStream->print("Black water level :");
+            Print("Black water level :");
             break;
         case N2kft_FuelGasoline:
-            OutputStream->print("Gasoline level :");
+            Print("Gasoline level :");
             break;
         case N2kft_Error:
-            OutputStream->print("Error level :");
+            Print("Error level :");
             break;
         case N2kft_Unavailable:
-            OutputStream->print("Unknown level :");
+            Print("Unknown level :");
             break;
         }
-        OutputStream->print(Level);
-        OutputStream->print("%");
-        OutputStream->print(" (");
-        OutputStream->print(Capacity * Level / 100);
-        OutputStream->print("l)");
-        OutputStream->print(" capacity :");
-        OutputStream->println(Capacity);
+        Print(Level);
+        Print("%");
+        Print(" (");
+        Print(Capacity * Level / 100);
+        Print("l)");
+        Print(" capacity :");
+        Println(Capacity);
     }
 }
 
@@ -946,7 +974,7 @@ void Attitude(const tN2kMsg &N2kMsg)
 
     if (ParseN2kAttitude(N2kMsg, SID, Yaw, Pitch, Roll))
     {
-        OutputStream->println("Attitude:");
+        Println("Attitude:");
         PrintLabelValWithConversionCheckUnDef("  SID: ", SID, 0, true);
         PrintLabelValWithConversionCheckUnDef("  Yaw (deg): ", Yaw, &RadToDeg, true);
         PrintLabelValWithConversionCheckUnDef("  Pitch (deg): ", Pitch, &RadToDeg, true);
@@ -954,8 +982,8 @@ void Attitude(const tN2kMsg &N2kMsg)
     }
     else
     {
-        OutputStream->print("Failed to parse PGN: ");
-        OutputStream->println(N2kMsg.PGN);
+        Print("Failed to parse PGN: ");
+        Println(N2kMsg.PGN);
     }
 }
 
@@ -966,8 +994,8 @@ void HandleNMEA2000Msg(const tN2kMsg &N2kMsg)
     int iHandler;
 
     // Find handler
-    OutputStream->print("In Main Handler: ");
-    OutputStream->println(N2kMsg.PGN);
+    Print("In Main Handler: ");
+    Println(N2kMsg.PGN);
     for (iHandler = 0; NMEA2000Handlers[iHandler].PGN != 0 && !(N2kMsg.PGN == NMEA2000Handlers[iHandler].PGN); iHandler++)
         ;
 
