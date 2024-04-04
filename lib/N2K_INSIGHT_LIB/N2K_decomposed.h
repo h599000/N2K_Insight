@@ -2,6 +2,7 @@
 #define N2K_DECOMPOSED_H
 
 #include <N2KMsg.h>
+#include <N2kTypes.h>
 
 class N2K_decomposed
 {
@@ -64,7 +65,7 @@ protected:
     tN2kEngineDiscreteStatus2 Status2;
 
 public:
-    PGN127489_d(time_t TimeOfReceipt, int Pg, int8_t Instance, double OilPressure, double OilTemperature, double Temperature, double AlternatorPotential, double FuelRate, double TotalEngineHours, double CoolantPressure, double FuelPressure, int8_t EngineLoad, int8_t EngineTorque, tN2kEngineDiscreteStatus1 Status1, tN2kEngineDiscreteStatus1 Status2);
+    PGN127489_d(time_t TimeOfReceipt, int Pg, int8_t Instance, double OilPressure, double OilTemperature, double Temperature, double AlternatorPotential, double FuelRate, double TotalEngineHours, double CoolantPressure, double FuelPressure, int8_t EngineLoad, int8_t EngineTorque, tN2kEngineDiscreteStatus1 Status1, tN2kEngineDiscreteStatus2 Status2);
     String N2KtoJSON();
 };
 
