@@ -39,7 +39,7 @@ N2K_decomposed(TimeOfReceipt, Pgn), Instance(Instance), OilPressure(OilPressure)
 
 String PGN127489_d::N2KtoJSON()
 {
-    return String();
+
 }
 
 PGN129026_d::PGN129026_d(time_t TimeOfReceipt, int Pgn, unsigned char SID, tN2kHeadingReference HeadingReference, double SOG, double COG):
@@ -51,6 +51,7 @@ N2K_decomposed(TimeOfReceipt, Pgn), SID(SID), HeadingReference(HeadingReference)
 String PGN129026_d::N2KtoJSON()
 {
     String json = "{";
+    json += "\"TimeOfReceipt\"" + String(TimeOfReceipt) + ",";
     json += "\"PGN\": " + String(Pgn) + ","; 
     json += "\"SID\": " + String(SID) + ",";
     json += "\"HeadingReference\": " + String(HeadingReference) + ",";
