@@ -52,4 +52,11 @@ String PGN129026_d::N2KtoJSON()
 {
     String json = "{";
     json += "\"PGN\": " + String(Pgn) + ","; 
+    json += "\"SID\": " + String(SID) + ",";
+    json += "\"HeadingReference\": " + String(HeadingReference) + ",";
+    json += "\"SOG\": " + String(SOG) + ",";
+    json += "\"COG\": " + String(COG);
+    json += "}";
+    return json;
+
 }
