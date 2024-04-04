@@ -20,6 +20,10 @@ tNMEA2000_esp32 NMEA2000;
 int LED_R = 2;
 int LED_B = 4;
 // int LED_G = 15;
+#include "N2K_decomposed.h"
+
+PGN129026_d* n2kCOGSOG;
+
 
 //#define N2k_CAN_INT_PIN 21
 #include <Arduino.h>
@@ -125,7 +129,7 @@ void setup() {
 
 
   Serial.begin(115200); delay(500);
-  OutputStream=&SerialBT;
+  OutputStream=&Serial;
 //   while (!Serial) 
    
 //  NMEA2000.SetN2kCANReceiveFrameBufSize(50);
@@ -316,6 +320,8 @@ void COGSOG(const tN2kMsg &N2kMsg) {
                         OutputStream->print("  reference: "); PrintN2kEnumType(HeadingReference,OutputStream);
       PrintLabelValWithConversionCheckUnDef("  COG (deg): ",COG,&RadToDeg,true);
       PrintLabelValWithConversionCheckUnDef("  SOG (m/s): ",SOG,0,true);
+      n2kCOGSOG = new PGN129026_d(N2kMsg.MsgTime, 129026, SID, HeadingReference, SOG, COG);
+
     } else {
       OutputStream->print("Failed to parse PGN: "); OutputStream->println(N2kMsg.PGN);
     }
