@@ -4,6 +4,8 @@
 #define ESP32_CAN_TX_PIN GPIO_NUM_25 // Uncomment this and set right CAN TX pin definition, if you use ESP32 and do not have TX on default IO 16
 #define ESP32_CAN_RX_PIN GPIO_NUM_26 // Uncomment this and set right CAN RX pin definition, if you use ESP32 and do not have RX on default IO 4
 #include <NMEA2000_esp32.h> // https://github.com/ttlappalainen/NMEA2000_esp32
+#include <Wire.h>
+
 //
 tNMEA2000_esp32 NMEA2000;
 #include <Arduino.h>
@@ -17,7 +19,7 @@ tNMEA2000_esp32 NMEA2000;
 #include <N2kMessagesEnumToStr.h>
 int LED_R = 2;
 int LED_B = 4;
-int LED_G = 15;
+// int LED_G = 15;
 
 //#define N2k_CAN_INT_PIN 21
 #include <Arduino.h>
@@ -115,10 +117,10 @@ void HandleNMEA2000Msg(const tN2kMsg &N2kMsg);
 void setup() {
 
   pinMode(LED_R,OUTPUT);
-  pinMode(LED_G,OUTPUT);
+  // pinMode(LED_G,OUTPUT);
   pinMode(LED_B,OUTPUT);
   digitalWrite(LED_B, 0);
-  digitalWrite(LED_G, HIGH);
+  // digitalWrite(LED_G, HIGH);
   digitalWrite(LED_R, HIGH);
 
 
@@ -130,6 +132,7 @@ void setup() {
   // Do not forward bus messages at all
   NMEA2000.SetForwardType(tNMEA2000::fwdt_Text);
   NMEA2000.SetForwardStream(OutputStream);
+  NMEA2000.SetMode(tNMEA2000::N2km_ListenOnly);
   // Set false below, if you do not want to see messages parsed to HEX withing library
   NMEA2000.EnableForward(false);
   NMEA2000.SetMsgHandler(HandleNMEA2000Msg);
@@ -744,4 +747,5 @@ void loop()
   {
     Serial.write(SerialBT.read());
   }
+  
 }
