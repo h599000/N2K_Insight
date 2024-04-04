@@ -21,14 +21,13 @@ int LED_R = 2;
 int LED_B = 4;
 // int LED_G = 15;
 #include "N2K_decomposed.h"
+#include "N2K_composed.h"
 
 PGN129026_d* n2kCOGSOG;
+N2K_composed* composedN2KCOGSOG;
 
 
 //#define N2k_CAN_INT_PIN 21
-#include <Arduino.h>
-#include <N2kMsg.h>
-#include <NMEA2000.h>
 // Demo: NMEA2000 library. 
 // This demo reads messages from NMEA 2000 bus and
 // sends them translated to clear text to Serial.
@@ -39,7 +38,6 @@ PGN129026_d* n2kCOGSOG;
 // received messages internally without slow operations, then youmay survive
 // without interrupt.
 
-#include <Arduino.h>
 //#define N2k_SPI_CS_PIN 53    // Pin for SPI select for mcp_can
 //#define N2k_CAN_INT_PIN 21   // Interrupt pin for mcp_can
 //#define USE_MCP_CAN_CLOCK_SET 8  // Uncomment this, if your mcp_can shield has 8MHz chrystal
@@ -47,8 +45,6 @@ PGN129026_d* n2kCOGSOG;
 //#define ESP32_CAN_RX_PIN GPIO_NUM_17 // Uncomment this and set right CAN RX pin definition, if you use ESP32 and do not have RX on default IO 4
 //#define NMEA2000_ARDUINO_DUE_CAN_BUS tNMEA2000_due::CANDevice1    // Uncomment this, if you want to use CAN bus 1 instead of 0 for Arduino DUE
 //#include <NMEA2000_CAN.h>
-#include <N2kMessages.h>
-#include <N2kMessagesEnumToStr.h>
 
 #if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
 #error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
@@ -321,6 +317,7 @@ void COGSOG(const tN2kMsg &N2kMsg) {
       PrintLabelValWithConversionCheckUnDef("  COG (deg): ",COG,&RadToDeg,true);
       PrintLabelValWithConversionCheckUnDef("  SOG (m/s): ",SOG,0,true);
       n2kCOGSOG = new PGN129026_d(N2kMsg.MsgTime, 129026, SID, HeadingReference, SOG, COG);
+      composedN2KCOGSOG = new N2K_composed(N2kMsg);
 
     } else {
       OutputStream->print("Failed to parse PGN: "); OutputStream->println(N2kMsg.PGN);
@@ -751,7 +748,22 @@ void loop()
   }
   if (SerialBT.available())
   {
-    Serial.write(SerialBT.read());
+    char inputChar = (char)SerialBT.read();
+
+    switch(inputChar) {
+      case '1':
+        SerialBT.println(n2kCOGSOG->N2KtoJSON());
+        break;
+      case '2':
+        SerialBT.println(composedN2KCOGSOG->N2KtoJSON());
+        break;
+      default:
+        SerialBT.println("Unexpected input. Press 1 or 2");
+        break;
+    }
+
+    // Serial.write(SerialBT.read());
+
   }
   
 }
