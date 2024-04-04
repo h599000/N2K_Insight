@@ -65,7 +65,7 @@ protected:
     tN2kEngineDiscreteStatus2 Status2;
 
 public:
-    PGN127489_d(time_t TimeOfReceipt, int Pg, int8_t Instance, double OilPressure, double OilTemperature, double Temperature, double AlternatorPotential, double FuelRate, double TotalEngineHours, double CoolantPressure, double FuelPressure, int8_t EngineLoad, int8_t EngineTorque, tN2kEngineDiscreteStatus1 Status1, tN2kEngineDiscreteStatus2 Status2);
+    PGN127489_d(time_t TimeOfReceipt, int Pgn, int8_t Instance, double OilPressure, double OilTemperature, double Temperature, double AlternatorPotential, double FuelRate, double TotalEngineHours, double CoolantPressure, double FuelPressure, int8_t EngineLoad, int8_t EngineTorque, tN2kEngineDiscreteStatus1 Status1, tN2kEngineDiscreteStatus2 Status2);
     String N2KtoJSON();
 };
 
@@ -79,7 +79,7 @@ protected:
     double SOG;
 
 public:
-    PGN129026_d(time_t TimeOfReceipt, int Pg, unsigned char SID, tN2kHeadingReference HeadingReference, double SOG, double COG);
+    PGN129026_d(time_t TimeOfReceipt, int Pgn, unsigned char SID, tN2kHeadingReference HeadingReference, double SOG, double COG);
     String N2KtoJSON();
 };
 #endif
