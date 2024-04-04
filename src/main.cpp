@@ -17,7 +17,7 @@ tNMEA2000_esp32 NMEA2000;
 #include <N2kMessagesEnumToStr.h>
 int LED_R = 2;
 int LED_B = 4;
-int LED_G = 15;
+// int LED_G = 15;
 
 //#define N2k_CAN_INT_PIN 21
 #include <Arduino.h>
@@ -115,10 +115,10 @@ void HandleNMEA2000Msg(const tN2kMsg &N2kMsg);
 void setup() {
 
   pinMode(LED_R,OUTPUT);
-  pinMode(LED_G,OUTPUT);
+  //pinMode(LED_G,OUTPUT);
   pinMode(LED_B,OUTPUT);
   digitalWrite(LED_B, 0);
-  digitalWrite(LED_G, HIGH);
+  //digitalWrite(LED_G, HIGH);
   digitalWrite(LED_R, HIGH);
 
 
