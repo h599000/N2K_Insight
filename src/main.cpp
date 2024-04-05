@@ -3,7 +3,7 @@
 #include "BluetoothSerial.h"
 #define ESP32_CAN_TX_PIN GPIO_NUM_25 // Uncomment this and set right CAN TX pin definition, if you use ESP32 and do not have TX on default IO 16
 #define ESP32_CAN_RX_PIN GPIO_NUM_26 // Uncomment this and set right CAN RX pin definition, if you use ESP32 and do not have RX on default IO 4
-#define I2C_ADDRESS 0x0a
+#define I2C_ADDRESS 0x08
 #include <NMEA2000_esp32.h> // https://github.com/ttlappalainen/NMEA2000_esp32
 #include <Wire.h>
 
@@ -23,6 +23,7 @@ int LED_B = 4;
 // int LED_G = 15;
 #include "N2K_decomposed.h"
 #include "N2K_composed.h"
+
 #include <N2K_I2C_API.h>
 
 PGN129026_d* n2kCOGSOG;
@@ -286,7 +287,7 @@ void COGSOG(const tN2kMsg &N2kMsg) {
     double SOG;
     
     if (ParseN2kCOGSOGRapid(N2kMsg,SID,HeadingReference,COG,SOG) ) {
-                      
+                      n2kCOGSOG = new PGN129026_d(N2kMsg.MsgTime,129026, SID, HeadingReference, SOG, COG);
 
     } else {
       OutputStream->print("Failed to parse PGN: "); OutputStream->println(N2kMsg.PGN);
