@@ -24,7 +24,7 @@ void receiveData(int byteCount)
         index++;
     };
 
-    
+    HandleI2CMessage(request);
 
 
 }

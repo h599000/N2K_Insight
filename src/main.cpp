@@ -149,7 +149,7 @@ void setup() {
   Wire.setPins(23,22);
   Wire.onReceive(receiveData);
   Wire.onRequest(requestData);
-  Wire.begin();
+  Wire.begin(I2C_ADDRESS);
 }
 
 //*****************************************************************************
