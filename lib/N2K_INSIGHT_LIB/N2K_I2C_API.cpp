@@ -14,20 +14,6 @@ void requestData()
     Wire.write(0);
 }
 
-void receiveData(int byteCount)
-{
-    byte request[byteCount];
-    int index = 0;
-    while (Wire.available())
-    {
-        request[index] = Wire.read();
-        index++;
-    };
-
-    HandleI2CMessage(request);
-
-
-}
 
 void HandleI2CMessage(byte* request)
 {
@@ -68,4 +54,20 @@ void spesificPGN(long pgn)
         bytearray[0] = length;
         Wire.slaveWrite(bytearray, length+1);
     };
+}
+
+
+void receiveData(int byteCount)
+{
+    byte request[byteCount];
+    int index = 0;
+    while (Wire.available())
+    {
+        request[index] = Wire.read();
+        index++;
+    };
+    HandleI2CMessage(request);
+    
+
+
 }
