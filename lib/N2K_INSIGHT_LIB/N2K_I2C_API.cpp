@@ -11,7 +11,7 @@ I2CRequestHandler I2CRequestHandlers[] = {
 
 void requestData()
 {
-    Wire.write(0);
+    //Wire.write(0);
 }
 
 
@@ -47,12 +47,14 @@ void newPGN(long pgn)
 void spesificPGN(long pgn)
 {
     if(pgn = 129026){
+        
         String response = n2kCOGSOG->N2KtoJSON();
         int length = response.length();
-        uint8_t bytearray[length+1];
-        response.getBytes(bytearray+1, length);
-        bytearray[0] = length;
-        Wire.slaveWrite(bytearray, length+1);
+        uint8_t bytearray[length + 2];
+        response.getBytes(bytearray + 2, length + 1);
+        bytearray[0] = (byte) length >> 8;
+        bytearray[1] = (byte) length;
+        Wire.slaveWrite(bytearray, length + 2);
     };
 }
 
