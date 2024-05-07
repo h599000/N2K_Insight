@@ -7,6 +7,7 @@ N2K_composed::N2K_composed(tN2kMsg msg) : PGN(msg.PGN), Source(msg.Source), Data
         Data[i] = msg.Data[i];
     }
 }
+
 String N2K_composed::N2KtoJSON()
 {
     String json = "{";
