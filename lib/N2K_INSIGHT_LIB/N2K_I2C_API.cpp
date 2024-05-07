@@ -3,27 +3,12 @@
 
 #define REQUEST_MESSAGE_LENGTH 4
 
+
 I2CRequestHandler I2CRequestHandlers[] = {
     {0, &status},
     {1, &newPGN},
     {8, &spesificPGN}
 };
-
-void requestData()
-{
-}
-
-void receiveData(int byteCount)
-{
-    byte request[byteCount];
-    int index = 0;
-    while (Wire.available())
-    {
-        request[index] = Wire.read();
-        index++;
-    };
-    HandleI2CMessage(request);
-}
 
 void HandleI2CMessage(byte* request)
 {
@@ -42,7 +27,7 @@ void HandleI2CMessage(byte* request)
 
 void status(long pgn)
 {
-    byte status = I2C_ADDRESS;
+    byte status = 8;
     Wire.slaveWrite(&status, 1);    
 }
 
@@ -66,4 +51,20 @@ void spesificPGN(long pgn)
         Wire.flush();
         Wire.slaveWrite(bytearray, length + 2);
     };
+}
+
+void requestData()
+{
+}
+
+void receiveData(int byteCount)
+{
+    byte request[byteCount];
+    int index = 0;
+    while (Wire.available())
+    {
+        request[index] = Wire.read();
+        index++;
+    };
+    HandleI2CMessage(request);
 }
