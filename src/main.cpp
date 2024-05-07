@@ -54,6 +54,10 @@ void Pressure(const tN2kMsg &N2kMsg);
 void UserDatumSettings(const tN2kMsg &N2kMsg);
 void GNSSSatsInView(const tN2kMsg &N2kMsg);
 
+/**
+ * @brief A list of handler methods.
+ * 
+ */
 tNMEA2000Handler NMEA2000Handlers[] = {
     {126992L, &SystemTime},
     {127245L, &Rudder},
@@ -324,7 +328,15 @@ void Heading(const tN2kMsg &N2kMsg)
   }
 }
 
-//*****************************************************************************
+/**
+ * @brief Function for parsing N2kMsg and extracting COG and SOG.
+ * 
+ * This function parses a NMEA 2000 COG and SOG rapid update message (PGN 129026),
+ * extracting the SID (Source ID), Heading Reference, COG (Course Over Ground), and SOG (Speed Over Ground).
+ * The parsed values are then used to initialize a new PGN129026_d object.
+ * 
+ * @param N2kMsg The N2kMsg object representing the NMEA 2000 message to parse. 
+ */
 void COGSOG(const tN2kMsg &N2kMsg)
 {
   unsigned char SID;
@@ -828,6 +840,11 @@ void Attitude(const tN2kMsg &N2kMsg)
 
 //*****************************************************************************
 // NMEA 2000 message handler
+/**
+ * @brief This method finds the handler method corresponding to the PGN in the tN2kMsg parameter and calls that method.
+ * 
+ * @param N2kMsg The message to handle.
+ */
 void HandleNMEA2000Msg(const tN2kMsg &N2kMsg)
 {
   int iHandler;
@@ -838,7 +855,8 @@ void HandleNMEA2000Msg(const tN2kMsg &N2kMsg)
 
   for (iHandler = 0; NMEA2000Handlers[iHandler].PGN != 0 && !(N2kMsg.PGN == NMEA2000Handlers[iHandler].PGN); iHandler++)
     ;
-
+    
+  // If handler is in list, call it.
   if (NMEA2000Handlers[iHandler].PGN != 0)
   {
     NMEA2000Handlers[iHandler].Handler(N2kMsg);
