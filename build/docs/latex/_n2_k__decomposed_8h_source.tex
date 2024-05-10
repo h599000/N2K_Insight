@@ -1,0 +1,95 @@
+\doxysection{N2\+K\+\_\+decomposed.\+h}
+\hypertarget{_n2_k__decomposed_8h_source}{}\label{_n2_k__decomposed_8h_source}\index{lib/N2K\_INSIGHT\_LIB/N2K\_decomposed.h@{lib/N2K\_INSIGHT\_LIB/N2K\_decomposed.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ N2K\_DECOMPOSED\_H}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ N2K\_DECOMPOSED\_H}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <N2KMsg.h>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <N2kTypes.h>}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_n2_k__decomposed}{N2K\_decomposed}}}
+\DoxyCodeLine{00008\ \{}
+\DoxyCodeLine{00009\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00010\ \ \ \ \ time\_t\ TimeOfReceipt;}
+\DoxyCodeLine{00011\ \ \ \ \ \textcolor{keywordtype}{int}\ Pgn;}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00024\ \ \ \ \ \mbox{\hyperlink{class_n2_k__decomposed_a5c82baa3342914ed0159c204fcf169a5}{N2K\_decomposed}}(time\_t\ TimeOfReceipt,\ \textcolor{keywordtype}{int}\ Pgn);}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keyword}{virtual}\ String\ \mbox{\hyperlink{class_n2_k__decomposed_a099499bd504d42ec7dc561460a24f815}{N2KtoJSON}}();}
+\DoxyCodeLine{00039\ \};}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00042\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_p_g_n127496__d}{PGN127496\_d}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_n2_k__decomposed}{N2K\_decomposed}}}
+\DoxyCodeLine{00043\ \{}
+\DoxyCodeLine{00044\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{comment}{//\ Seconds}}
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{keywordtype}{double}\ TimetoEmpty;}
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{comment}{//\ Meters}}
+\DoxyCodeLine{00048\ \ \ \ \ \textcolor{keywordtype}{double}\ DistancetoEmpty;}
+\DoxyCodeLine{00049\ \ \ \ \ \textcolor{comment}{//\ Litres}}
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keywordtype}{short}\ EstimatedFuelRemaining;}
+\DoxyCodeLine{00051\ \ \ \ \ \textcolor{comment}{//\ Meters}}
+\DoxyCodeLine{00052\ \ \ \ \ \textcolor{keywordtype}{double}\ TripRunTime;}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00069\ \ \ \ \ \mbox{\hyperlink{class_p_g_n127496__d_adb6307f2f9be13925f8c374f4f371272}{PGN127496\_d}}(time\_t\ TimeOfReceipt,\ \textcolor{keywordtype}{int}\ Pgn,\ \textcolor{keywordtype}{double}\ TimetoEmpty,\ \textcolor{keywordtype}{double}\ DistancetoEmpty,\ \textcolor{keywordtype}{short}\ EstimatedFuelRemaining,\ \textcolor{keywordtype}{double}\ TripRunTime);}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00076\ \ \ \ \ String\ \mbox{\hyperlink{class_p_g_n127496__d_a697fb682bc467ec0bf8e73fe74599d74}{N2KtoJSON}}();}
+\DoxyCodeLine{00077\ \};}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00080\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_p_g_n127489__d}{PGN127489\_d}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_n2_k__decomposed}{N2K\_decomposed}}}
+\DoxyCodeLine{00081\ \{}
+\DoxyCodeLine{00082\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00083\ \ \ \ \ \textcolor{comment}{//\ if\ only\ one\ instance\ 0\ will\ be\ only\ engine.\ If\ two\ instances\ 0\ will\ be\ port\ and\ 1\ will\ be\ stb.\ If\ more\ engines\ 0\ will\ be\ portmost\ 1\ will\ be\ secound\ portmost\ and\ so\ forth.}}
+\DoxyCodeLine{00084\ \ \ \ \ int8\_t\ Instance;}
+\DoxyCodeLine{00085\ \ \ \ \ \textcolor{comment}{//\ Pascal}}
+\DoxyCodeLine{00086\ \ \ \ \ \textcolor{keywordtype}{double}\ OilPressure;}
+\DoxyCodeLine{00087\ \ \ \ \ \textcolor{comment}{//\ Kelvin}}
+\DoxyCodeLine{00088\ \ \ \ \ \textcolor{keywordtype}{double}\ OilTemperature;}
+\DoxyCodeLine{00089\ \ \ \ \ \textcolor{comment}{//\ Kelvin}}
+\DoxyCodeLine{00090\ \ \ \ \ \textcolor{keywordtype}{double}\ Temperature;}
+\DoxyCodeLine{00091\ \ \ \ \ \textcolor{comment}{//\ Volt}}
+\DoxyCodeLine{00092\ \ \ \ \ \textcolor{keywordtype}{double}\ AlternatorPotential;}
+\DoxyCodeLine{00093\ \ \ \ \ \textcolor{comment}{//\ Liter/hour}}
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{keywordtype}{double}\ FuelRate;}
+\DoxyCodeLine{00095\ \ \ \ \ \textcolor{comment}{//\ Seconds}}
+\DoxyCodeLine{00096\ \ \ \ \ \textcolor{keywordtype}{double}\ TotalEngineHours;}
+\DoxyCodeLine{00097\ \ \ \ \ \textcolor{comment}{//\ Pascal}}
+\DoxyCodeLine{00098\ \ \ \ \ \textcolor{keywordtype}{double}\ CoolantPressure;}
+\DoxyCodeLine{00099\ \ \ \ \ \textcolor{comment}{//\ Pascal}}
+\DoxyCodeLine{00100\ \ \ \ \ \textcolor{keywordtype}{double}\ FuelPressure;}
+\DoxyCodeLine{00101\ \ \ \ \ \textcolor{comment}{//\ Percent}}
+\DoxyCodeLine{00102\ \ \ \ \ int8\_t\ EngineLoad;}
+\DoxyCodeLine{00103\ \ \ \ \ \textcolor{comment}{//\ Percent}}
+\DoxyCodeLine{00104\ \ \ \ \ int8\_t\ EngineTorque;}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \ \ \ \ tN2kEngineDiscreteStatus1\ Status1;}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00108\ \ \ \ \ tN2kEngineDiscreteStatus2\ Status2;}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00110\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00130\ \ \ \ \ \mbox{\hyperlink{class_p_g_n127489__d_a2e780e4d640fc7bb23b5079103cda629}{PGN127489\_d}}(time\_t\ TimeOfReceipt,\ \textcolor{keywordtype}{int}\ Pgn,\ int8\_t\ Instance,\ \textcolor{keywordtype}{double}\ OilPressure,\ \textcolor{keywordtype}{double}\ OilTemperature,\ \textcolor{keywordtype}{double}\ Temperature,\ \textcolor{keywordtype}{double}\ AlternatorPotential,\ \textcolor{keywordtype}{double}\ FuelRate,\ \textcolor{keywordtype}{double}\ TotalEngineHours,\ \textcolor{keywordtype}{double}\ CoolantPressure,\ \textcolor{keywordtype}{double}\ FuelPressure,\ int8\_t\ EngineLoad,\ int8\_t\ EngineTorque,\ tN2kEngineDiscreteStatus1\ Status1,\ tN2kEngineDiscreteStatus2\ Status2);}
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00137\ \ \ \ \ String\ \mbox{\hyperlink{class_p_g_n127489__d_aac8904edb2469840eceea580e903e928}{N2KtoJSON}}();}
+\DoxyCodeLine{00138\ \};}
+\DoxyCodeLine{00139\ }
+\DoxyCodeLine{00141\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_p_g_n129026__d}{PGN129026\_d}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_n2_k__decomposed}{N2K\_decomposed}}}
+\DoxyCodeLine{00142\ \{}
+\DoxyCodeLine{00143\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00144\ \ \ \ \ \textcolor{comment}{//\ Letter}}
+\DoxyCodeLine{00145\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ SID;}
+\DoxyCodeLine{00146\ \ \ \ \ \textcolor{comment}{//\ Heading\ reference\ }}
+\DoxyCodeLine{00147\ \ \ \ \ tN2kHeadingReference\ HeadingReference;}
+\DoxyCodeLine{00148\ \ \ \ \ \textcolor{comment}{//\ Radians}}
+\DoxyCodeLine{00149\ \ \ \ \ \textcolor{keywordtype}{double}\ COG;}
+\DoxyCodeLine{00150\ \ \ \ \ \textcolor{comment}{//\ Meters\ per\ second}}
+\DoxyCodeLine{00151\ \ \ \ \ \textcolor{keywordtype}{double}\ SOG;}
+\DoxyCodeLine{00152\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00164\ \ \ \ \ \mbox{\hyperlink{class_p_g_n129026__d_abbb4d048e802aaa874c40b49c407cd6e}{PGN129026\_d}}(time\_t\ TimeOfReceipt,\ \textcolor{keywordtype}{int}\ Pgn,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ SID,\ tN2kHeadingReference\ HeadingReference,\ \textcolor{keywordtype}{double}\ SOG,\ \textcolor{keywordtype}{double}\ COG);}
+\DoxyCodeLine{00165\ }
+\DoxyCodeLine{00171\ \ \ \ \ String\ \mbox{\hyperlink{class_p_g_n129026__d_ac2dad9b3cf8f95611f8e8f482ce11856}{N2KtoJSON}}();}
+\DoxyCodeLine{00172\ \};}
+\DoxyCodeLine{00173\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

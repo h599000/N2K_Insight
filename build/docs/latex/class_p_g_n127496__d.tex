@@ -1,0 +1,110 @@
+\doxysection{PGN127496\+\_\+d Class Reference}
+\hypertarget{class_p_g_n127496__d}{}\label{class_p_g_n127496__d}\index{PGN127496\_d@{PGN127496\_d}}
+
+
+PGN 127496 -\/ Trip Parameters, Vessel.  
+
+
+
+
+{\ttfamily \#include $<$N2\+K\+\_\+decomposed.\+h$>$}
+
+Inheritance diagram for PGN127496\+\_\+d\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_p_g_n127496__d}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_p_g_n127496__d_adb6307f2f9be13925f8c374f4f371272}{PGN127496\+\_\+d}} (time\+\_\+t Time\+Of\+Receipt, int Pgn, double Timeto\+Empty, double Distanceto\+Empty, short Estimated\+Fuel\+Remaining, double Trip\+Run\+Time)
+\begin{DoxyCompactList}\small\item\em Constructor for \doxylink{class_p_g_n127496__d}{PGN127496\+\_\+d} class, initializing data specific to PGN 127496. \end{DoxyCompactList}\item 
+String \mbox{\hyperlink{class_p_g_n127496__d_a697fb682bc467ec0bf8e73fe74599d74}{N2\+Kto\+JSON}} ()
+\begin{DoxyCompactList}\small\item\em Converts the \doxylink{class_n2_k__decomposed}{N2\+K\+\_\+decomposed} object data to a JSON formatted string. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_n2_k__decomposed}{N2\+K\+\_\+decomposed}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_n2_k__decomposed_a5c82baa3342914ed0159c204fcf169a5}{N2\+K\+\_\+decomposed}} (time\+\_\+t Time\+Of\+Receipt, int Pgn)
+\begin{DoxyCompactList}\small\item\em Constructor for the \doxylink{class_n2_k__decomposed}{N2\+K\+\_\+decomposed} class, which initializes an instance with given parameters. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_p_g_n127496__d_a44313dd2589bb69d7e8a29d123d6ce51}\label{class_p_g_n127496__d_a44313dd2589bb69d7e8a29d123d6ce51} 
+double {\bfseries Timeto\+Empty}
+\item 
+\Hypertarget{class_p_g_n127496__d_aeda13e062eb573f1b4dbd3ca8eef64e8}\label{class_p_g_n127496__d_aeda13e062eb573f1b4dbd3ca8eef64e8} 
+double {\bfseries Distanceto\+Empty}
+\item 
+\Hypertarget{class_p_g_n127496__d_a6d331865a03147813c35fa60e54a5292}\label{class_p_g_n127496__d_a6d331865a03147813c35fa60e54a5292} 
+short {\bfseries Estimated\+Fuel\+Remaining}
+\item 
+\Hypertarget{class_p_g_n127496__d_ae3500dccd41ca89099b743db943812cf}\label{class_p_g_n127496__d_ae3500dccd41ca89099b743db943812cf} 
+double {\bfseries Trip\+Run\+Time}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_n2_k__decomposed}{N2\+K\+\_\+decomposed}}}
+\begin{DoxyCompactItemize}
+\item 
+time\+\_\+t {\bfseries Time\+Of\+Receipt}
+\item 
+int {\bfseries Pgn}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+PGN 127496 -\/ Trip Parameters, Vessel. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_p_g_n127496__d_adb6307f2f9be13925f8c374f4f371272}\label{class_p_g_n127496__d_adb6307f2f9be13925f8c374f4f371272} 
+\index{PGN127496\_d@{PGN127496\_d}!PGN127496\_d@{PGN127496\_d}}
+\index{PGN127496\_d@{PGN127496\_d}!PGN127496\_d@{PGN127496\_d}}
+\doxysubsubsection{\texorpdfstring{PGN127496\_d()}{PGN127496\_d()}}
+{\footnotesize\ttfamily PGN127496\+\_\+d\+::\+PGN127496\+\_\+d (\begin{DoxyParamCaption}\item[{time\+\_\+t}]{Time\+Of\+Receipt,  }\item[{int}]{Pgn,  }\item[{double}]{Timeto\+Empty,  }\item[{double}]{Distanceto\+Empty,  }\item[{short}]{Estimated\+Fuel\+Remaining,  }\item[{double}]{Trip\+Run\+Time }\end{DoxyParamCaption})}
+
+
+
+Constructor for \doxylink{class_p_g_n127496__d}{PGN127496\+\_\+d} class, initializing data specific to PGN 127496. 
+
+The \doxylink{class_p_g_n127496__d}{PGN127496\+\_\+d} class is derived from \doxylink{class_n2_k__decomposed}{N2\+K\+\_\+decomposed} and represents the NMEA 2000 message with PGN 127496, which typically contains information about the engine parameters like time to empty, distance to empty, estimated fuel remaining, and trip run time.
+
+
+\begin{DoxyParams}{Parameters}
+{\em Time\+Of\+Receipt} & The time at which the message was received \\
+\hline
+{\em Pgn} & The PGN of this NMEA 2000 message. \\
+\hline
+{\em Timeto\+Empty} & The calculated time remaining before the fuel tank is empty, based on current usage. \\
+\hline
+{\em Distanceto\+Empty} & The calculated distance that can be covered before the fuel tank is empty, based on current usage. \\
+\hline
+{\em Estimated\+Fuel\+Remaining} & An estimate of the amount of fuel remaining in the tank. \\
+\hline
+{\em Trip\+Run\+Time} & The cumulative time the trip has been running. \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_p_g_n127496__d_a697fb682bc467ec0bf8e73fe74599d74}\label{class_p_g_n127496__d_a697fb682bc467ec0bf8e73fe74599d74} 
+\index{PGN127496\_d@{PGN127496\_d}!N2KtoJSON@{N2KtoJSON}}
+\index{N2KtoJSON@{N2KtoJSON}!PGN127496\_d@{PGN127496\_d}}
+\doxysubsubsection{\texorpdfstring{N2KtoJSON()}{N2KtoJSON()}}
+{\footnotesize\ttfamily String PGN127496\+\_\+d\+::\+N2\+Kto\+JSON (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Converts the \doxylink{class_n2_k__decomposed}{N2\+K\+\_\+decomposed} object data to a JSON formatted string. 
+
+\begin{DoxyReturn}{Returns}
+A JSON formatted string. 
+\end{DoxyReturn}
+
+
+Reimplemented from \mbox{\hyperlink{class_n2_k__decomposed_a099499bd504d42ec7dc561460a24f815}{N2\+K\+\_\+decomposed}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+lib/\+N2\+K\+\_\+\+INSIGHT\+\_\+\+LIB/N2\+K\+\_\+decomposed.\+h\item 
+lib/\+N2\+K\+\_\+\+INSIGHT\+\_\+\+LIB/N2\+K\+\_\+decomposed.\+cpp\end{DoxyCompactItemize}

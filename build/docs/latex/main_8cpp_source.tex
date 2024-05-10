@@ -1,0 +1,859 @@
+\doxysection{main.\+cpp}
+\hypertarget{main_8cpp_source}{}\label{main_8cpp_source}\index{src/main.cpp@{src/main.cpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Libraries\ from\ https://github.com/ttlappalainen}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <N2kMsg.h>}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <NMEA2000.h>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <NMEA2000\_esp32.h>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <N2kMessages.h>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <N2kMessagesEnumToStr.h>}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <Wire.h>}\ \textcolor{comment}{//\ Library\ for\ I2C\ Communication}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ Custom\ libraries}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ "{}N2K\_decomposed.h"{}}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ "{}N2K\_composed.h"{}}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ <N2K\_I2C\_API.h>}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#define\ ESP32\_CAN\_TX\_PIN\ GPIO\_NUM\_25\ }\textcolor{comment}{//\ Uncomment\ this\ and\ set\ right\ CAN\ TX\ pin\ definition,\ if\ you\ use\ ESP32\ and\ do\ not\ have\ TX\ on\ default\ IO\ 16}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#define\ ESP32\_CAN\_RX\_PIN\ GPIO\_NUM\_26\ }\textcolor{comment}{//\ Uncomment\ this\ and\ set\ right\ CAN\ RX\ pin\ definition,\ if\ you\ use\ ESP32\ and\ do\ not\ have\ RX\ on\ default\ IO\ 4}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#define\ I2C\_ADDRESS\ 0x08\ \ \ \ \ \ \ \ \ \ \ \ \ }\textcolor{comment}{//\ Slave\ address\ for\ this\ device}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#define\ I2C\_SDA\_PIN\ 23}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#define\ I2C\_SCL\_PIN\ 22}}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ tNMEA2000\_esp32\ NMEA2000;}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \mbox{\hyperlink{class_p_g_n129026__d}{PGN129026\_d}}\ *n2kCOGSOG;}
+\DoxyCodeLine{00024\ \mbox{\hyperlink{class_n2_k__composed}{N2K\_composed}}\ *composedN2KCOGSOG;}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct}}
+\DoxyCodeLine{00027\ \{}
+\DoxyCodeLine{00028\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}\ PGN;}
+\DoxyCodeLine{00029\ \ \ void\ (*Handler)(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg);}
+\DoxyCodeLine{00030\ \}\ \mbox{\hyperlink{structt_n_m_e_a2000_handler}{tNMEA2000Handler}};}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \textcolor{keywordtype}{void}\ SystemTime(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg);}
+\DoxyCodeLine{00033\ \textcolor{keywordtype}{void}\ Rudder(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg);}
+\DoxyCodeLine{00034\ \textcolor{keywordtype}{void}\ EngineRapid(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg);}
+\DoxyCodeLine{00035\ \textcolor{keywordtype}{void}\ EngineDynamicParameters(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg);}
+\DoxyCodeLine{00036\ \textcolor{keywordtype}{void}\ TransmissionParameters(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg);}
+\DoxyCodeLine{00037\ \textcolor{keywordtype}{void}\ TripFuelConsumption(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg);}
+\DoxyCodeLine{00038\ \textcolor{keywordtype}{void}\ Speed(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg);}
+\DoxyCodeLine{00039\ \textcolor{keywordtype}{void}\ WaterDepth(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg);}
+\DoxyCodeLine{00040\ \textcolor{keywordtype}{void}\ BinaryStatus(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg);}
+\DoxyCodeLine{00041\ \textcolor{keywordtype}{void}\ FluidLevel(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg);}
+\DoxyCodeLine{00042\ \textcolor{keywordtype}{void}\ OutsideEnvironmental(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg);}
+\DoxyCodeLine{00043\ \textcolor{keywordtype}{void}\ Temperature(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg);}
+\DoxyCodeLine{00044\ \textcolor{keywordtype}{void}\ TemperatureExt(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg);}
+\DoxyCodeLine{00045\ \textcolor{keywordtype}{void}\ DCStatus(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg);}
+\DoxyCodeLine{00046\ \textcolor{keywordtype}{void}\ BatteryConfigurationStatus(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg);}
+\DoxyCodeLine{00047\ \textcolor{keywordtype}{void}\ COGSOG(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg);}
+\DoxyCodeLine{00048\ \textcolor{keywordtype}{void}\ GNSS(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg);}
+\DoxyCodeLine{00049\ \textcolor{keywordtype}{void}\ LocalOffset(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg);}
+\DoxyCodeLine{00050\ \textcolor{keywordtype}{void}\ Attitude(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg);}
+\DoxyCodeLine{00051\ \textcolor{keywordtype}{void}\ Heading(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg);}
+\DoxyCodeLine{00052\ \textcolor{keywordtype}{void}\ Humidity(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg);}
+\DoxyCodeLine{00053\ \textcolor{keywordtype}{void}\ Pressure(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg);}
+\DoxyCodeLine{00054\ \textcolor{keywordtype}{void}\ UserDatumSettings(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg);}
+\DoxyCodeLine{00055\ \textcolor{keywordtype}{void}\ GNSSSatsInView(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg);}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \mbox{\hyperlink{structt_n_m_e_a2000_handler}{tNMEA2000Handler}}\ NMEA2000Handlers[]\ =\ \{}
+\DoxyCodeLine{00058\ \ \ \ \ \{126992L,\ \&SystemTime\},}
+\DoxyCodeLine{00059\ \ \ \ \ \{127245L,\ \&Rudder\},}
+\DoxyCodeLine{00060\ \ \ \ \ \{127250L,\ \&Heading\},}
+\DoxyCodeLine{00061\ \ \ \ \ \{127257L,\ \&Attitude\},}
+\DoxyCodeLine{00062\ \ \ \ \ \{127488L,\ \&EngineRapid\},}
+\DoxyCodeLine{00063\ \ \ \ \ \{127489L,\ \&EngineDynamicParameters\},}
+\DoxyCodeLine{00064\ \ \ \ \ \{127493L,\ \&TransmissionParameters\},}
+\DoxyCodeLine{00065\ \ \ \ \ \{127497L,\ \&TripFuelConsumption\},}
+\DoxyCodeLine{00066\ \ \ \ \ \{127501L,\ \&BinaryStatus\},}
+\DoxyCodeLine{00067\ \ \ \ \ \{127505L,\ \&FluidLevel\},}
+\DoxyCodeLine{00068\ \ \ \ \ \{127506L,\ \&DCStatus\},}
+\DoxyCodeLine{00069\ \ \ \ \ \{127513L,\ \&BatteryConfigurationStatus\},}
+\DoxyCodeLine{00070\ \ \ \ \ \{128259L,\ \&Speed\},}
+\DoxyCodeLine{00071\ \ \ \ \ \{128267L,\ \&WaterDepth\},}
+\DoxyCodeLine{00072\ \ \ \ \ \{129026L,\ \&COGSOG\},}
+\DoxyCodeLine{00073\ \ \ \ \ \{129029L,\ \&GNSS\},}
+\DoxyCodeLine{00074\ \ \ \ \ \{129033L,\ \&LocalOffset\},}
+\DoxyCodeLine{00075\ \ \ \ \ \{129045L,\ \&UserDatumSettings\},}
+\DoxyCodeLine{00076\ \ \ \ \ \{129540L,\ \&GNSSSatsInView\},}
+\DoxyCodeLine{00077\ \ \ \ \ \{130310L,\ \&OutsideEnvironmental\},}
+\DoxyCodeLine{00078\ \ \ \ \ \{130312L,\ \&Temperature\},}
+\DoxyCodeLine{00079\ \ \ \ \ \{130313L,\ \&Humidity\},}
+\DoxyCodeLine{00080\ \ \ \ \ \{130314L,\ \&Pressure\},}
+\DoxyCodeLine{00081\ \ \ \ \ \{130316L,\ \&TemperatureExt\},}
+\DoxyCodeLine{00082\ \ \ \ \ \{0,\ 0\}\};}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00084\ Stream\ *OutputStream;}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \textcolor{keywordtype}{void}\ HandleNMEA2000Msg(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg);}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \textcolor{keywordtype}{void}\ setup()}
+\DoxyCodeLine{00089\ \{}
+\DoxyCodeLine{00090\ \ \ Serial.begin(115200);}
+\DoxyCodeLine{00091\ \ \ delay(500);}
+\DoxyCodeLine{00092\ \ \ OutputStream\ =\ \&Serial;}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ \ \ NMEA2000.SetForwardType(tNMEA2000::fwdt\_Text);}
+\DoxyCodeLine{00095\ \ \ NMEA2000.SetForwardStream(OutputStream);}
+\DoxyCodeLine{00096\ \ \ NMEA2000.SetMode(tNMEA2000::N2km\_ListenOnly);}
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00098\ \ \ \textcolor{comment}{//\ Set\ false\ below,\ if\ you\ do\ not\ want\ to\ see\ messages\ parsed\ to\ HEX\ withing\ library}}
+\DoxyCodeLine{00099\ \ \ NMEA2000.EnableForward(\textcolor{keyword}{false});}
+\DoxyCodeLine{00100\ \ \ NMEA2000.SetMsgHandler(HandleNMEA2000Msg);}
+\DoxyCodeLine{00101\ \ \ NMEA2000.Open();}
+\DoxyCodeLine{00102\ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Running..."{}});}
+\DoxyCodeLine{00103\ }
+\DoxyCodeLine{00104\ \ \ Wire.setPins(I2C\_SDA\_PIN,\ I2C\_SCL\_PIN);\ \textcolor{comment}{//\ Sets\ the\ pins\ used\ for\ I2C\ communication}}
+\DoxyCodeLine{00105\ \ \ Wire.onReceive(receiveData);\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Sets\ method\ for\ handling\ I2C\ receive\ events}}
+\DoxyCodeLine{00106\ \ \ Wire.onRequest(requestData);\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Sets\ method\ for\ handling\ I2C\ request\ events}}
+\DoxyCodeLine{00107\ \ \ Wire.begin(I2C\_ADDRESS);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Begins\ I2C\ communication\ and\ sets\ this\ device´s\ address}}
+\DoxyCodeLine{00108\ \}}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00110\ \textcolor{comment}{//*****************************************************************************}}
+\DoxyCodeLine{00111\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00112\ \textcolor{keywordtype}{void}\ PrintLabelValWithConversionCheckUnDef(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *label,\ T\ val,\ \textcolor{keywordtype}{double}\ (*ConvFunc)(\textcolor{keywordtype}{double}\ val)\ =\ 0,\ \textcolor{keywordtype}{bool}\ AddLf\ =\ \textcolor{keyword}{false},\ int8\_t\ Desim\ =\ -\/1)}
+\DoxyCodeLine{00113\ \{}
+\DoxyCodeLine{00114\ \ \ OutputStream-\/>print(label);}
+\DoxyCodeLine{00115\ \ \ \textcolor{keywordflow}{if}\ (!N2kIsNA(val))}
+\DoxyCodeLine{00116\ \ \ \{}
+\DoxyCodeLine{00117\ \ \ \ \ \textcolor{keywordflow}{if}\ (Desim\ <\ 0)}
+\DoxyCodeLine{00118\ \ \ \ \ \{}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (ConvFunc)}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ OutputStream-\/>print(ConvFunc(val));}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ OutputStream-\/>print(val);}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00127\ \ \ \ \ \}}
+\DoxyCodeLine{00128\ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00129\ \ \ \ \ \{}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (ConvFunc)}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ OutputStream-\/>print(ConvFunc(val),\ Desim);}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ OutputStream-\/>print(val,\ Desim);}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00138\ \ \ \ \ \}}
+\DoxyCodeLine{00139\ \ \ \}}
+\DoxyCodeLine{00140\ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00141\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}not\ available"{}});}
+\DoxyCodeLine{00142\ \ \ \textcolor{keywordflow}{if}\ (AddLf)}
+\DoxyCodeLine{00143\ \ \ \ \ OutputStream-\/>println();}
+\DoxyCodeLine{00144\ \}}
+\DoxyCodeLine{00145\ }
+\DoxyCodeLine{00146\ \textcolor{comment}{//*****************************************************************************}}
+\DoxyCodeLine{00147\ \textcolor{keywordtype}{void}\ SystemTime(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg)}
+\DoxyCodeLine{00148\ \{}
+\DoxyCodeLine{00149\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ SID;}
+\DoxyCodeLine{00150\ \ \ uint16\_t\ SystemDate;}
+\DoxyCodeLine{00151\ \ \ \textcolor{keywordtype}{double}\ SystemTime;}
+\DoxyCodeLine{00152\ \ \ tN2kTimeSource\ TimeSource;}
+\DoxyCodeLine{00153\ }
+\DoxyCodeLine{00154\ \ \ \textcolor{keywordflow}{if}\ (ParseN2kSystemTime(N2kMsg,\ SID,\ SystemDate,\ SystemTime,\ TimeSource))}
+\DoxyCodeLine{00155\ \ \ \{}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ OutputStream-\/>println(\textcolor{stringliteral}{"{}System\ time:"{}});}
+\DoxyCodeLine{00157\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ SID:\ "{}},\ SID,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00158\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ days\ since\ 1.1.1970:\ "{}},\ SystemDate,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00159\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ seconds\ since\ midnight:\ "{}},\ SystemTime,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}\ \ time\ source:\ "{}});PrintN2kEnumType(TimeSource,\ OutputStream);}
+\DoxyCodeLine{00161\ \ \ \}}
+\DoxyCodeLine{00162\ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00163\ \ \ \{}
+\DoxyCodeLine{00164\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Failed\ to\ parse\ PGN:\ "{}});}
+\DoxyCodeLine{00165\ \ \ \ \ OutputStream-\/>println(N2kMsg.PGN);}
+\DoxyCodeLine{00166\ \ \ \}}
+\DoxyCodeLine{00167\ \}}
+\DoxyCodeLine{00168\ }
+\DoxyCodeLine{00169\ \textcolor{comment}{//*****************************************************************************}}
+\DoxyCodeLine{00170\ \textcolor{keywordtype}{void}\ Rudder(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg)}
+\DoxyCodeLine{00171\ \{}
+\DoxyCodeLine{00172\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ Instance;}
+\DoxyCodeLine{00173\ \ \ tN2kRudderDirectionOrder\ RudderDirectionOrder;}
+\DoxyCodeLine{00174\ \ \ \textcolor{keywordtype}{double}\ RudderPosition;}
+\DoxyCodeLine{00175\ \ \ \textcolor{keywordtype}{double}\ AngleOrder;}
+\DoxyCodeLine{00176\ }
+\DoxyCodeLine{00177\ \ \ \textcolor{keywordflow}{if}\ (ParseN2kRudder(N2kMsg,\ RudderPosition,\ Instance,\ RudderDirectionOrder,\ AngleOrder))}
+\DoxyCodeLine{00178\ \ \ \{}
+\DoxyCodeLine{00179\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}Rudder:\ "{}},\ Instance,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00180\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ position\ (deg):\ "{}},\ RudderPosition,\ \&RadToDeg,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}\ \ direction\ order:\ "{}});PrintN2kEnumType(RudderDirectionOrder,\ OutputStream);}
+\DoxyCodeLine{00182\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ angle\ order\ (deg):\ "{}},\ AngleOrder,\ \&RadToDeg,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00183\ \ \ \}}
+\DoxyCodeLine{00184\ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00185\ \ \ \{}
+\DoxyCodeLine{00186\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Failed\ to\ parse\ PGN:\ "{}});}
+\DoxyCodeLine{00187\ \ \ \ \ OutputStream-\/>println(N2kMsg.PGN);}
+\DoxyCodeLine{00188\ \ \ \}}
+\DoxyCodeLine{00189\ \}}
+\DoxyCodeLine{00190\ }
+\DoxyCodeLine{00191\ \textcolor{comment}{//*****************************************************************************}}
+\DoxyCodeLine{00192\ \textcolor{keywordtype}{void}\ EngineRapid(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg)}
+\DoxyCodeLine{00193\ \{}
+\DoxyCodeLine{00194\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ EngineInstance;}
+\DoxyCodeLine{00195\ \ \ \textcolor{keywordtype}{double}\ EngineSpeed;}
+\DoxyCodeLine{00196\ \ \ \textcolor{keywordtype}{double}\ EngineBoostPressure;}
+\DoxyCodeLine{00197\ \ \ int8\_t\ EngineTiltTrim;}
+\DoxyCodeLine{00198\ }
+\DoxyCodeLine{00199\ \ \ \textcolor{keywordflow}{if}\ (ParseN2kEngineParamRapid(N2kMsg,\ EngineInstance,\ EngineSpeed,\ EngineBoostPressure,\ EngineTiltTrim))}
+\DoxyCodeLine{00200\ \ \ \{}
+\DoxyCodeLine{00201\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}Engine\ rapid\ params:\ "{}},\ EngineInstance,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00202\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ RPM:\ "{}},\ EngineSpeed,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00203\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ boost\ pressure\ (Pa):\ "{}},\ EngineBoostPressure,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00204\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ tilt\ trim:\ "{}},\ EngineTiltTrim,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00205\ \ \ \}}
+\DoxyCodeLine{00206\ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00207\ \ \ \{}
+\DoxyCodeLine{00208\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Failed\ to\ parse\ PGN:\ "{}});}
+\DoxyCodeLine{00209\ \ \ \ \ OutputStream-\/>println(N2kMsg.PGN);}
+\DoxyCodeLine{00210\ \ \ \}}
+\DoxyCodeLine{00211\ \}}
+\DoxyCodeLine{00212\ }
+\DoxyCodeLine{00213\ \textcolor{comment}{//*****************************************************************************}}
+\DoxyCodeLine{00214\ \textcolor{keywordtype}{void}\ EngineDynamicParameters(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg)}
+\DoxyCodeLine{00215\ \{}
+\DoxyCodeLine{00216\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ EngineInstance;}
+\DoxyCodeLine{00217\ \ \ \textcolor{keywordtype}{double}\ EngineOilPress;}
+\DoxyCodeLine{00218\ \ \ \textcolor{keywordtype}{double}\ EngineOilTemp;}
+\DoxyCodeLine{00219\ \ \ \textcolor{keywordtype}{double}\ EngineCoolantTemp;}
+\DoxyCodeLine{00220\ \ \ \textcolor{keywordtype}{double}\ AltenatorVoltage;}
+\DoxyCodeLine{00221\ \ \ \textcolor{keywordtype}{double}\ FuelRate;}
+\DoxyCodeLine{00222\ \ \ \textcolor{keywordtype}{double}\ EngineHours;}
+\DoxyCodeLine{00223\ \ \ \textcolor{keywordtype}{double}\ EngineCoolantPress;}
+\DoxyCodeLine{00224\ \ \ \textcolor{keywordtype}{double}\ EngineFuelPress;}
+\DoxyCodeLine{00225\ \ \ int8\_t\ EngineLoad;}
+\DoxyCodeLine{00226\ \ \ int8\_t\ EngineTorque;}
+\DoxyCodeLine{00227\ \ \ tN2kEngineDiscreteStatus1\ Status1;}
+\DoxyCodeLine{00228\ \ \ tN2kEngineDiscreteStatus2\ Status2;}
+\DoxyCodeLine{00229\ }
+\DoxyCodeLine{00230\ \ \ \textcolor{keywordflow}{if}\ (ParseN2kEngineDynamicParam(N2kMsg,\ EngineInstance,\ EngineOilPress,\ EngineOilTemp,\ EngineCoolantTemp,}
+\DoxyCodeLine{00231\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ AltenatorVoltage,\ FuelRate,\ EngineHours,}
+\DoxyCodeLine{00232\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ EngineCoolantPress,\ EngineFuelPress,}
+\DoxyCodeLine{00233\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ EngineLoad,\ EngineTorque,\ Status1,\ Status2))}
+\DoxyCodeLine{00234\ \ \ \{}
+\DoxyCodeLine{00235\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}Engine\ dynamic\ params:\ "{}},\ EngineInstance,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00236\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ oil\ pressure\ (Pa):\ "{}},\ EngineOilPress,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00237\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ oil\ temp\ (C):\ "{}},\ EngineOilTemp,\ \&KelvinToC,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00238\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ coolant\ temp\ (C):\ "{}},\ EngineCoolantTemp,\ \&KelvinToC,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00239\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ altenator\ voltage\ (V):\ "{}},\ AltenatorVoltage,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00240\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ fuel\ rate\ (l/h):\ "{}},\ FuelRate,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00241\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ engine\ hours\ (h):\ "{}},\ EngineHours,\ \&SecondsToh,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00242\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ coolant\ pressure\ (Pa):\ "{}},\ EngineCoolantPress,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00243\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ fuel\ pressure\ (Pa):\ "{}},\ EngineFuelPress,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00244\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ engine\ load\ (\%):\ "{}},\ EngineLoad,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00245\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ engine\ torque\ (\%):\ "{}},\ EngineTorque,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00246\ \ \ \}}
+\DoxyCodeLine{00247\ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00248\ \ \ \{}
+\DoxyCodeLine{00249\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Failed\ to\ parse\ PGN:\ "{}});}
+\DoxyCodeLine{00250\ \ \ \ \ OutputStream-\/>println(N2kMsg.PGN);}
+\DoxyCodeLine{00251\ \ \ \}}
+\DoxyCodeLine{00252\ \}}
+\DoxyCodeLine{00253\ }
+\DoxyCodeLine{00254\ \textcolor{comment}{//*****************************************************************************}}
+\DoxyCodeLine{00255\ \textcolor{keywordtype}{void}\ TransmissionParameters(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg)}
+\DoxyCodeLine{00256\ \{}
+\DoxyCodeLine{00257\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ EngineInstance;}
+\DoxyCodeLine{00258\ \ \ tN2kTransmissionGear\ TransmissionGear;}
+\DoxyCodeLine{00259\ \ \ \textcolor{keywordtype}{double}\ OilPressure;}
+\DoxyCodeLine{00260\ \ \ \textcolor{keywordtype}{double}\ OilTemperature;}
+\DoxyCodeLine{00261\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ DiscreteStatus1;}
+\DoxyCodeLine{00262\ }
+\DoxyCodeLine{00263\ \ \ \textcolor{keywordflow}{if}\ (ParseN2kTransmissionParameters(N2kMsg,\ EngineInstance,\ TransmissionGear,\ OilPressure,\ OilTemperature,\ DiscreteStatus1))}
+\DoxyCodeLine{00264\ \ \ \{}
+\DoxyCodeLine{00265\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}Transmission\ params:\ "{}},\ EngineInstance,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00266\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}\ \ gear:\ "{}});PrintN2kEnumType(TransmissionGear,\ OutputStream);}
+\DoxyCodeLine{00267\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ oil\ pressure\ (Pa):\ "{}},\ OilPressure,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00268\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ oil\ temperature\ (C):\ "{}},\ OilTemperature,\ \&KelvinToC,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00269\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ discrete\ status:\ "{}},\ DiscreteStatus1,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00270\ \ \ \}}
+\DoxyCodeLine{00271\ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00272\ \ \ \{}
+\DoxyCodeLine{00273\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Failed\ to\ parse\ PGN:\ "{}});}
+\DoxyCodeLine{00274\ \ \ \ \ OutputStream-\/>println(N2kMsg.PGN);}
+\DoxyCodeLine{00275\ \ \ \}}
+\DoxyCodeLine{00276\ \}}
+\DoxyCodeLine{00277\ }
+\DoxyCodeLine{00278\ \textcolor{comment}{//*****************************************************************************}}
+\DoxyCodeLine{00279\ \textcolor{keywordtype}{void}\ TripFuelConsumption(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg)}
+\DoxyCodeLine{00280\ \{}
+\DoxyCodeLine{00281\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ EngineInstance;}
+\DoxyCodeLine{00282\ \ \ \textcolor{keywordtype}{double}\ TripFuelUsed;}
+\DoxyCodeLine{00283\ \ \ \textcolor{keywordtype}{double}\ FuelRateAverage;}
+\DoxyCodeLine{00284\ \ \ \textcolor{keywordtype}{double}\ FuelRateEconomy;}
+\DoxyCodeLine{00285\ \ \ \textcolor{keywordtype}{double}\ InstantaneousFuelEconomy;}
+\DoxyCodeLine{00286\ }
+\DoxyCodeLine{00287\ \ \ \textcolor{keywordflow}{if}\ (ParseN2kEngineTripParameters(N2kMsg,\ EngineInstance,\ TripFuelUsed,\ FuelRateAverage,\ FuelRateEconomy,\ InstantaneousFuelEconomy))}
+\DoxyCodeLine{00288\ \ \ \{}
+\DoxyCodeLine{00289\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}Trip\ fuel\ consumption:\ "{}},\ EngineInstance,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00290\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ fuel\ used\ (l):\ "{}},\ TripFuelUsed,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00291\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ average\ fuel\ rate\ (l/h):\ "{}},\ FuelRateAverage,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00292\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ economy\ fuel\ rate\ (l/h):\ "{}},\ FuelRateEconomy,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00293\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ instantaneous\ fuel\ economy\ (l/h):\ "{}},\ InstantaneousFuelEconomy,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00294\ \ \ \}}
+\DoxyCodeLine{00295\ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00296\ \ \ \{}
+\DoxyCodeLine{00297\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Failed\ to\ parse\ PGN:\ "{}});}
+\DoxyCodeLine{00298\ \ \ \ \ OutputStream-\/>println(N2kMsg.PGN);}
+\DoxyCodeLine{00299\ \ \ \}}
+\DoxyCodeLine{00300\ \}}
+\DoxyCodeLine{00301\ }
+\DoxyCodeLine{00302\ \textcolor{comment}{//*****************************************************************************}}
+\DoxyCodeLine{00303\ \textcolor{keywordtype}{void}\ Heading(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg)}
+\DoxyCodeLine{00304\ \{}
+\DoxyCodeLine{00305\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ SID;}
+\DoxyCodeLine{00306\ \ \ tN2kHeadingReference\ HeadingReference;}
+\DoxyCodeLine{00307\ \ \ \textcolor{keywordtype}{double}\ Heading;}
+\DoxyCodeLine{00308\ \ \ \textcolor{keywordtype}{double}\ Deviation;}
+\DoxyCodeLine{00309\ \ \ \textcolor{keywordtype}{double}\ Variation;}
+\DoxyCodeLine{00310\ }
+\DoxyCodeLine{00311\ \ \ \textcolor{keywordflow}{if}\ (ParseN2kHeading(N2kMsg,\ SID,\ Heading,\ Deviation,\ Variation,\ HeadingReference))}
+\DoxyCodeLine{00312\ \ \ \{}
+\DoxyCodeLine{00313\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ OutputStream-\/>println(\textcolor{stringliteral}{"{}Heading:"{}});}
+\DoxyCodeLine{00314\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ SID:\ "{}},\ SID,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00315\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}\ \ reference:\ "{}});PrintN2kEnumType(HeadingReference,\ OutputStream);}
+\DoxyCodeLine{00316\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ Heading\ (deg):\ "{}},\ Heading,\ \&RadToDeg,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00317\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ Deviation\ (deg):\ "{}},\ Deviation,\ \&RadToDeg,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00318\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ Variation\ (deg):\ "{}},\ Variation,\ \&RadToDeg,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00319\ \ \ \}}
+\DoxyCodeLine{00320\ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00321\ \ \ \{}
+\DoxyCodeLine{00322\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Failed\ to\ parse\ PGN:\ "{}});}
+\DoxyCodeLine{00323\ \ \ \ \ OutputStream-\/>println(N2kMsg.PGN);}
+\DoxyCodeLine{00324\ \ \ \}}
+\DoxyCodeLine{00325\ \}}
+\DoxyCodeLine{00326\ }
+\DoxyCodeLine{00336\ \textcolor{keywordtype}{void}\ COGSOG(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg)}
+\DoxyCodeLine{00337\ \{}
+\DoxyCodeLine{00338\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ SID;}
+\DoxyCodeLine{00339\ \ \ tN2kHeadingReference\ HeadingReference;}
+\DoxyCodeLine{00340\ \ \ \textcolor{keywordtype}{double}\ COG;}
+\DoxyCodeLine{00341\ \ \ \textcolor{keywordtype}{double}\ SOG;}
+\DoxyCodeLine{00342\ }
+\DoxyCodeLine{00343\ \ \ \textcolor{keywordflow}{if}\ (ParseN2kCOGSOGRapid(N2kMsg,\ SID,\ HeadingReference,\ COG,\ SOG))}
+\DoxyCodeLine{00344\ \ \ \{}
+\DoxyCodeLine{00345\ \ \ \ \ n2kCOGSOG\ =\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_p_g_n129026__d}{PGN129026\_d}}(N2kMsg.MsgTime,\ 129026,\ SID,\ HeadingReference,\ SOG,\ COG);}
+\DoxyCodeLine{00346\ \ \ \}}
+\DoxyCodeLine{00347\ \ \ \textcolor{comment}{/*}}
+\DoxyCodeLine{00348\ \textcolor{comment}{\ \ else}}
+\DoxyCodeLine{00349\ \textcolor{comment}{\ \ \{}}
+\DoxyCodeLine{00350\ \textcolor{comment}{\ \ \ \ OutputStream-\/>print("{}Failed\ to\ parse\ PGN:\ "{});}}
+\DoxyCodeLine{00351\ \textcolor{comment}{\ \ \ \ OutputStream-\/>println(N2kMsg.PGN);}}
+\DoxyCodeLine{00352\ \textcolor{comment}{\ \ \}}}
+\DoxyCodeLine{00353\ \textcolor{comment}{\ \ */}}
+\DoxyCodeLine{00354\ \}}
+\DoxyCodeLine{00355\ }
+\DoxyCodeLine{00356\ \textcolor{comment}{//*****************************************************************************}}
+\DoxyCodeLine{00357\ \textcolor{keywordtype}{void}\ GNSS(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg)}
+\DoxyCodeLine{00358\ \{}
+\DoxyCodeLine{00359\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ SID;}
+\DoxyCodeLine{00360\ \ \ uint16\_t\ DaysSince1970;}
+\DoxyCodeLine{00361\ \ \ \textcolor{keywordtype}{double}\ SecondsSinceMidnight;}
+\DoxyCodeLine{00362\ \ \ \textcolor{keywordtype}{double}\ Latitude;}
+\DoxyCodeLine{00363\ \ \ \textcolor{keywordtype}{double}\ Longitude;}
+\DoxyCodeLine{00364\ \ \ \textcolor{keywordtype}{double}\ Altitude;}
+\DoxyCodeLine{00365\ \ \ tN2kGNSStype\ GNSStype;}
+\DoxyCodeLine{00366\ \ \ tN2kGNSSmethod\ GNSSmethod;}
+\DoxyCodeLine{00367\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ nSatellites;}
+\DoxyCodeLine{00368\ \ \ \textcolor{keywordtype}{double}\ HDOP;}
+\DoxyCodeLine{00369\ \ \ \textcolor{keywordtype}{double}\ PDOP;}
+\DoxyCodeLine{00370\ \ \ \textcolor{keywordtype}{double}\ GeoidalSeparation;}
+\DoxyCodeLine{00371\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ nReferenceStations;}
+\DoxyCodeLine{00372\ \ \ tN2kGNSStype\ ReferenceStationType;}
+\DoxyCodeLine{00373\ \ \ uint16\_t\ ReferenceSationID;}
+\DoxyCodeLine{00374\ \ \ \textcolor{keywordtype}{double}\ AgeOfCorrection;}
+\DoxyCodeLine{00375\ }
+\DoxyCodeLine{00376\ \ \ \textcolor{keywordflow}{if}\ (ParseN2kGNSS(N2kMsg,\ SID,\ DaysSince1970,\ SecondsSinceMidnight,}
+\DoxyCodeLine{00377\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Latitude,\ Longitude,\ Altitude,}
+\DoxyCodeLine{00378\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ GNSStype,\ GNSSmethod,}
+\DoxyCodeLine{00379\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ nSatellites,\ HDOP,\ PDOP,\ GeoidalSeparation,}
+\DoxyCodeLine{00380\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ nReferenceStations,\ ReferenceStationType,\ ReferenceSationID,}
+\DoxyCodeLine{00381\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ AgeOfCorrection))}
+\DoxyCodeLine{00382\ \ \ \{}
+\DoxyCodeLine{00383\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ OutputStream-\/>println(\textcolor{stringliteral}{"{}GNSS\ info:"{}});}
+\DoxyCodeLine{00384\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ SID:\ "{}},\ SID,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00385\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ days\ since\ 1.1.1970:\ "{}},\ DaysSince1970,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00386\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ seconds\ since\ midnight:\ "{}},\ SecondsSinceMidnight,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00387\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ latitude:\ "{}},\ Latitude,\ 0,\ \textcolor{keyword}{true},\ 9);}
+\DoxyCodeLine{00388\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ longitude:\ "{}},\ Longitude,\ 0,\ \textcolor{keyword}{true},\ 9);}
+\DoxyCodeLine{00389\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ altitude:\ (m):\ "{}},\ Altitude,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00390\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}\ \ GNSS\ type:\ "{}});PrintN2kEnumType(GNSStype,\ OutputStream);}
+\DoxyCodeLine{00391\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}\ \ GNSS\ method:\ "{}});PrintN2kEnumType(GNSSmethod,\ OutputStream);}
+\DoxyCodeLine{00392\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ satellite\ count:\ "{}},\ nSatellites,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00393\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ HDOP:\ "{}},\ HDOP,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00394\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ PDOP:\ "{}},\ PDOP,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00395\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ geoidal\ separation:\ "{}},\ GeoidalSeparation,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00396\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ reference\ stations:\ "{}},\ nReferenceStations,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00397\ \ \ \}}
+\DoxyCodeLine{00398\ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00399\ \ \ \{}
+\DoxyCodeLine{00400\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Failed\ to\ parse\ PGN:\ "{}});}
+\DoxyCodeLine{00401\ \ \ \ \ OutputStream-\/>println(N2kMsg.PGN);}
+\DoxyCodeLine{00402\ \ \ \}}
+\DoxyCodeLine{00403\ \}}
+\DoxyCodeLine{00404\ }
+\DoxyCodeLine{00405\ \textcolor{comment}{//*****************************************************************************}}
+\DoxyCodeLine{00406\ \textcolor{keywordtype}{void}\ UserDatumSettings(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg)}
+\DoxyCodeLine{00407\ \{}
+\DoxyCodeLine{00408\ \ \ \textcolor{keywordflow}{if}\ (N2kMsg.PGN\ !=\ 129045L)}
+\DoxyCodeLine{00409\ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00410\ \ \ \textcolor{keywordtype}{int}\ Index\ =\ 0;}
+\DoxyCodeLine{00411\ \ \ \textcolor{keywordtype}{double}\ val;}
+\DoxyCodeLine{00412\ }
+\DoxyCodeLine{00413\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ OutputStream-\/>println(\textcolor{stringliteral}{"{}User\ Datum\ Settings:\ "{}});val\ =\ N2kMsg.Get4ByteDouble(1e-\/2,\ Index);}
+\DoxyCodeLine{00414\ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ delta\ x\ (m):\ "{}},\ val,\ 0,\ \textcolor{keyword}{true});val\ =\ N2kMsg.Get4ByteDouble(1e-\/2,\ Index);}
+\DoxyCodeLine{00415\ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ delta\ y\ (m):\ "{}},\ val,\ 0,\ \textcolor{keyword}{true});val\ =\ N2kMsg.Get4ByteDouble(1e-\/2,\ Index);}
+\DoxyCodeLine{00416\ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ delta\ z\ (m):\ "{}},\ val,\ 0,\ \textcolor{keyword}{true});val\ =\ N2kMsg.GetFloat(Index);}
+\DoxyCodeLine{00417\ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ rotation\ in\ x\ (deg):\ "{}},\ val,\ \&RadToDeg,\ \textcolor{keyword}{true},\ 5);val\ =\ N2kMsg.GetFloat(Index);}
+\DoxyCodeLine{00418\ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ rotation\ in\ y\ (deg):\ "{}},\ val,\ \&RadToDeg,\ \textcolor{keyword}{true},\ 5);val\ =\ N2kMsg.GetFloat(Index);}
+\DoxyCodeLine{00419\ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ rotation\ in\ z\ (deg):\ "{}},\ val,\ \&RadToDeg,\ \textcolor{keyword}{true},\ 5);val\ =\ N2kMsg.GetFloat(Index);}
+\DoxyCodeLine{00420\ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ scale:\ "{}},\ val,\ 0,\ \textcolor{keyword}{true},\ 3);}
+\DoxyCodeLine{00421\ \}}
+\DoxyCodeLine{00422\ }
+\DoxyCodeLine{00423\ \textcolor{comment}{//*****************************************************************************}}
+\DoxyCodeLine{00424\ \textcolor{keywordtype}{void}\ GNSSSatsInView(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg)}
+\DoxyCodeLine{00425\ \{}
+\DoxyCodeLine{00426\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ SID;}
+\DoxyCodeLine{00427\ \ \ tN2kRangeResidualMode\ Mode;}
+\DoxyCodeLine{00428\ \ \ uint8\_t\ NumberOfSVs;}
+\DoxyCodeLine{00429\ \ \ tSatelliteInfo\ SatelliteInfo;}
+\DoxyCodeLine{00430\ }
+\DoxyCodeLine{00431\ \ \ \textcolor{keywordflow}{if}\ (ParseN2kPGNSatellitesInView(N2kMsg,\ SID,\ Mode,\ NumberOfSVs))}
+\DoxyCodeLine{00432\ \ \ \{}
+\DoxyCodeLine{00433\ \ \ \ \ OutputStream-\/>println(\textcolor{stringliteral}{"{}Satellites\ in\ view:\ "{}});}
+\DoxyCodeLine{00434\ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}\ \ mode:\ "{}});OutputStream-\/>println(Mode);}
+\DoxyCodeLine{00435\ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}\ \ number\ of\ satellites:\ "{}});OutputStream-\/>println(NumberOfSVs);}
+\DoxyCodeLine{00436\ \ \ \ \ \textcolor{keywordflow}{for}\ (uint8\_t\ i\ =\ 0;\ i\ <\ NumberOfSVs\ \&\&\ ParseN2kPGNSatellitesInView(N2kMsg,\ i,\ SatelliteInfo);\ i++)}
+\DoxyCodeLine{00437\ \ \ \ \ \{}
+\DoxyCodeLine{00438\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}\ \ Satellite\ PRN:\ "{}});OutputStream-\/>println(SatelliteInfo.PRN);}
+\DoxyCodeLine{00439\ \ \ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ \ \ elevation:\ "{}},\ SatelliteInfo.Elevation,\ \&RadToDeg,\ \textcolor{keyword}{true},\ 1);}
+\DoxyCodeLine{00440\ \ \ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ \ \ azimuth:\ \ \ "{}},\ SatelliteInfo.Azimuth,\ \&RadToDeg,\ \textcolor{keyword}{true},\ 1);}
+\DoxyCodeLine{00441\ \ \ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ \ \ SNR:\ \ \ \ \ \ \ "{}},\ SatelliteInfo.SNR,\ 0,\ \textcolor{keyword}{true},\ 1);}
+\DoxyCodeLine{00442\ \ \ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ \ \ residuals:\ "{}},\ SatelliteInfo.RangeResiduals,\ 0,\ \textcolor{keyword}{true},\ 1);}
+\DoxyCodeLine{00443\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}\ \ \ \ status:\ "{}});OutputStream-\/>println(SatelliteInfo.UsageStatus);}
+\DoxyCodeLine{00444\ \ \ \ \ \}}
+\DoxyCodeLine{00445\ \ \ \}}
+\DoxyCodeLine{00446\ \}}
+\DoxyCodeLine{00447\ }
+\DoxyCodeLine{00448\ \textcolor{comment}{//*****************************************************************************}}
+\DoxyCodeLine{00449\ \textcolor{keywordtype}{void}\ LocalOffset(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg)}
+\DoxyCodeLine{00450\ \{}
+\DoxyCodeLine{00451\ \ \ uint16\_t\ SystemDate;}
+\DoxyCodeLine{00452\ \ \ \textcolor{keywordtype}{double}\ SystemTime;}
+\DoxyCodeLine{00453\ \ \ int16\_t\ Offset;}
+\DoxyCodeLine{00454\ }
+\DoxyCodeLine{00455\ \ \ \textcolor{keywordflow}{if}\ (ParseN2kLocalOffset(N2kMsg,\ SystemDate,\ SystemTime,\ Offset))}
+\DoxyCodeLine{00456\ \ \ \{}
+\DoxyCodeLine{00457\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ OutputStream-\/>println(\textcolor{stringliteral}{"{}Date,time\ and\ local\ offset:\ "{}});}
+\DoxyCodeLine{00458\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ days\ since\ 1.1.1970:\ "{}},\ SystemDate,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00459\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ seconds\ since\ midnight:\ "{}},\ SystemTime,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00460\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ local\ offset\ (min):\ "{}},\ Offset,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00461\ \ \ \}}
+\DoxyCodeLine{00462\ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00463\ \ \ \{}
+\DoxyCodeLine{00464\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Failed\ to\ parse\ PGN:\ "{}});}
+\DoxyCodeLine{00465\ \ \ \ \ OutputStream-\/>println(N2kMsg.PGN);}
+\DoxyCodeLine{00466\ \ \ \}}
+\DoxyCodeLine{00467\ \}}
+\DoxyCodeLine{00468\ }
+\DoxyCodeLine{00469\ \textcolor{comment}{//*****************************************************************************}}
+\DoxyCodeLine{00470\ \textcolor{keywordtype}{void}\ OutsideEnvironmental(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg)}
+\DoxyCodeLine{00471\ \{}
+\DoxyCodeLine{00472\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ SID;}
+\DoxyCodeLine{00473\ \ \ \textcolor{keywordtype}{double}\ WaterTemperature;}
+\DoxyCodeLine{00474\ \ \ \textcolor{keywordtype}{double}\ OutsideAmbientAirTemperature;}
+\DoxyCodeLine{00475\ \ \ \textcolor{keywordtype}{double}\ AtmosphericPressure;}
+\DoxyCodeLine{00476\ }
+\DoxyCodeLine{00477\ \ \ \textcolor{keywordflow}{if}\ (ParseN2kOutsideEnvironmentalParameters(N2kMsg,\ SID,\ WaterTemperature,\ OutsideAmbientAirTemperature,\ AtmosphericPressure))}
+\DoxyCodeLine{00478\ \ \ \{}
+\DoxyCodeLine{00479\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}Water\ temp:\ "{}},\ WaterTemperature,\ \&KelvinToC);}
+\DoxyCodeLine{00480\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{},\ outside\ ambient\ temp:\ "{}},\ OutsideAmbientAirTemperature,\ \&KelvinToC);}
+\DoxyCodeLine{00481\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{},\ pressure:\ "{}},\ AtmosphericPressure,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00482\ \ \ \}}
+\DoxyCodeLine{00483\ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00484\ \ \ \{}
+\DoxyCodeLine{00485\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Failed\ to\ parse\ PGN:\ "{}});}
+\DoxyCodeLine{00486\ \ \ \ \ OutputStream-\/>println(N2kMsg.PGN);}
+\DoxyCodeLine{00487\ \ \ \}}
+\DoxyCodeLine{00488\ \}}
+\DoxyCodeLine{00489\ }
+\DoxyCodeLine{00490\ \textcolor{comment}{//*****************************************************************************}}
+\DoxyCodeLine{00491\ \textcolor{keywordtype}{void}\ Temperature(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg)}
+\DoxyCodeLine{00492\ \{}
+\DoxyCodeLine{00493\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ SID;}
+\DoxyCodeLine{00494\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ TempInstance;}
+\DoxyCodeLine{00495\ \ \ tN2kTempSource\ TempSource;}
+\DoxyCodeLine{00496\ \ \ \textcolor{keywordtype}{double}\ ActualTemperature;}
+\DoxyCodeLine{00497\ \ \ \textcolor{keywordtype}{double}\ SetTemperature;}
+\DoxyCodeLine{00498\ }
+\DoxyCodeLine{00499\ \ \ \textcolor{keywordflow}{if}\ (ParseN2kTemperature(N2kMsg,\ SID,\ TempInstance,\ TempSource,\ ActualTemperature,\ SetTemperature))}
+\DoxyCodeLine{00500\ \ \ \{}
+\DoxyCodeLine{00501\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Temperature\ source:\ "{}});PrintN2kEnumType(TempSource,\ OutputStream,\ \textcolor{keyword}{false});}
+\DoxyCodeLine{00502\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{},\ actual\ temperature:\ "{}},\ ActualTemperature,\ \&KelvinToC);}
+\DoxyCodeLine{00503\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{},\ set\ temperature:\ "{}},\ SetTemperature,\ \&KelvinToC,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00504\ \ \ \}}
+\DoxyCodeLine{00505\ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00506\ \ \ \{}
+\DoxyCodeLine{00507\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Failed\ to\ parse\ PGN:\ "{}});}
+\DoxyCodeLine{00508\ \ \ \ \ OutputStream-\/>println(N2kMsg.PGN);}
+\DoxyCodeLine{00509\ \ \ \}}
+\DoxyCodeLine{00510\ \}}
+\DoxyCodeLine{00511\ }
+\DoxyCodeLine{00512\ \textcolor{comment}{//*****************************************************************************}}
+\DoxyCodeLine{00513\ \textcolor{keywordtype}{void}\ Humidity(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg)}
+\DoxyCodeLine{00514\ \{}
+\DoxyCodeLine{00515\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ SID;}
+\DoxyCodeLine{00516\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ Instance;}
+\DoxyCodeLine{00517\ \ \ tN2kHumiditySource\ HumiditySource;}
+\DoxyCodeLine{00518\ \ \ \textcolor{keywordtype}{double}\ ActualHumidity,\ SetHumidity;}
+\DoxyCodeLine{00519\ }
+\DoxyCodeLine{00520\ \ \ \textcolor{keywordflow}{if}\ (ParseN2kHumidity(N2kMsg,\ SID,\ Instance,\ HumiditySource,\ ActualHumidity,\ SetHumidity))}
+\DoxyCodeLine{00521\ \ \ \{}
+\DoxyCodeLine{00522\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Humidity\ source:\ "{}});PrintN2kEnumType(HumiditySource,\ OutputStream,\ \textcolor{keyword}{false});}
+\DoxyCodeLine{00523\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{},\ humidity:\ "{}},\ ActualHumidity,\ 0,\ \textcolor{keyword}{false});}
+\DoxyCodeLine{00524\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{},\ set\ humidity:\ "{}},\ SetHumidity,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00525\ \ \ \}}
+\DoxyCodeLine{00526\ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00527\ \ \ \{}
+\DoxyCodeLine{00528\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Failed\ to\ parse\ PGN:\ "{}});}
+\DoxyCodeLine{00529\ \ \ \ \ OutputStream-\/>println(N2kMsg.PGN);}
+\DoxyCodeLine{00530\ \ \ \}}
+\DoxyCodeLine{00531\ \}}
+\DoxyCodeLine{00532\ }
+\DoxyCodeLine{00533\ \textcolor{comment}{//*****************************************************************************}}
+\DoxyCodeLine{00534\ \textcolor{keywordtype}{void}\ Pressure(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg)}
+\DoxyCodeLine{00535\ \{}
+\DoxyCodeLine{00536\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ SID;}
+\DoxyCodeLine{00537\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ Instance;}
+\DoxyCodeLine{00538\ \ \ tN2kPressureSource\ PressureSource;}
+\DoxyCodeLine{00539\ \ \ \textcolor{keywordtype}{double}\ ActualPressure;}
+\DoxyCodeLine{00540\ }
+\DoxyCodeLine{00541\ \ \ \textcolor{keywordflow}{if}\ (ParseN2kPressure(N2kMsg,\ SID,\ Instance,\ PressureSource,\ ActualPressure))}
+\DoxyCodeLine{00542\ \ \ \{}
+\DoxyCodeLine{00543\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Pressure\ source:\ "{}});PrintN2kEnumType(PressureSource,\ OutputStream,\ \textcolor{keyword}{false});}
+\DoxyCodeLine{00544\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{},\ pressure:\ "{}},\ ActualPressure,\ \&PascalTomBar,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00545\ \ \ \}}
+\DoxyCodeLine{00546\ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00547\ \ \ \{}
+\DoxyCodeLine{00548\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Failed\ to\ parse\ PGN:\ "{}});}
+\DoxyCodeLine{00549\ \ \ \ \ OutputStream-\/>println(N2kMsg.PGN);}
+\DoxyCodeLine{00550\ \ \ \}}
+\DoxyCodeLine{00551\ \}}
+\DoxyCodeLine{00552\ }
+\DoxyCodeLine{00553\ \textcolor{comment}{//*****************************************************************************}}
+\DoxyCodeLine{00554\ \textcolor{keywordtype}{void}\ TemperatureExt(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg)}
+\DoxyCodeLine{00555\ \{}
+\DoxyCodeLine{00556\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ SID;}
+\DoxyCodeLine{00557\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ TempInstance;}
+\DoxyCodeLine{00558\ \ \ tN2kTempSource\ TempSource;}
+\DoxyCodeLine{00559\ \ \ \textcolor{keywordtype}{double}\ ActualTemperature;}
+\DoxyCodeLine{00560\ \ \ \textcolor{keywordtype}{double}\ SetTemperature;}
+\DoxyCodeLine{00561\ }
+\DoxyCodeLine{00562\ \ \ \textcolor{keywordflow}{if}\ (ParseN2kTemperatureExt(N2kMsg,\ SID,\ TempInstance,\ TempSource,\ ActualTemperature,\ SetTemperature))}
+\DoxyCodeLine{00563\ \ \ \{}
+\DoxyCodeLine{00564\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Temperature\ source:\ "{}});PrintN2kEnumType(TempSource,\ OutputStream,\ \textcolor{keyword}{false});}
+\DoxyCodeLine{00565\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{},\ actual\ temperature:\ "{}},\ ActualTemperature,\ \&KelvinToC);}
+\DoxyCodeLine{00566\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{},\ set\ temperature:\ "{}},\ SetTemperature,\ \&KelvinToC,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00567\ \ \ \}}
+\DoxyCodeLine{00568\ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00569\ \ \ \{}
+\DoxyCodeLine{00570\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Failed\ to\ parse\ PGN:\ "{}});}
+\DoxyCodeLine{00571\ \ \ \ \ OutputStream-\/>println(N2kMsg.PGN);}
+\DoxyCodeLine{00572\ \ \ \}}
+\DoxyCodeLine{00573\ \}}
+\DoxyCodeLine{00574\ }
+\DoxyCodeLine{00575\ \textcolor{comment}{//*****************************************************************************}}
+\DoxyCodeLine{00576\ \textcolor{keywordtype}{void}\ BatteryConfigurationStatus(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg)}
+\DoxyCodeLine{00577\ \{}
+\DoxyCodeLine{00578\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ BatInstance;}
+\DoxyCodeLine{00579\ \ \ tN2kBatType\ BatType;}
+\DoxyCodeLine{00580\ \ \ tN2kBatEqSupport\ SupportsEqual;}
+\DoxyCodeLine{00581\ \ \ tN2kBatNomVolt\ BatNominalVoltage;}
+\DoxyCodeLine{00582\ \ \ tN2kBatChem\ BatChemistry;}
+\DoxyCodeLine{00583\ \ \ \textcolor{keywordtype}{double}\ BatCapacity;}
+\DoxyCodeLine{00584\ \ \ int8\_t\ BatTemperatureCoefficient;}
+\DoxyCodeLine{00585\ \ \ \textcolor{keywordtype}{double}\ PeukertExponent;}
+\DoxyCodeLine{00586\ \ \ int8\_t\ ChargeEfficiencyFactor;}
+\DoxyCodeLine{00587\ }
+\DoxyCodeLine{00588\ \ \ \textcolor{keywordflow}{if}\ (ParseN2kBatConf(N2kMsg,\ BatInstance,\ BatType,\ SupportsEqual,\ BatNominalVoltage,\ BatChemistry,\ BatCapacity,\ BatTemperatureCoefficient,\ PeukertExponent,\ ChargeEfficiencyFactor))}
+\DoxyCodeLine{00589\ \ \ \{}
+\DoxyCodeLine{00590\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}Battery\ instance:\ "{}},\ BatInstance,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00591\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}\ \ -\/\ type:\ "{}});PrintN2kEnumType(BatType,\ OutputStream);}
+\DoxyCodeLine{00592\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}\ \ -\/\ support\ equal.:\ "{}});PrintN2kEnumType(SupportsEqual,\ OutputStream);}
+\DoxyCodeLine{00593\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}\ \ -\/\ nominal\ voltage:\ "{}});PrintN2kEnumType(BatNominalVoltage,\ OutputStream);}
+\DoxyCodeLine{00594\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}\ \ -\/\ chemistry:\ "{}});PrintN2kEnumType(BatChemistry,\ OutputStream);}
+\DoxyCodeLine{00595\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ -\/\ capacity\ (Ah):\ "{}},\ BatCapacity,\ \&CoulombToAh,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00596\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ -\/\ temperature\ coefficient\ (\%):\ "{}},\ BatTemperatureCoefficient,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00597\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ -\/\ peukert\ exponent:\ "{}},\ PeukertExponent,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00598\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ -\/\ charge\ efficiency\ factor\ (\%):\ "{}},\ ChargeEfficiencyFactor,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00599\ \ \ \}}
+\DoxyCodeLine{00600\ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00601\ \ \ \{}
+\DoxyCodeLine{00602\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Failed\ to\ parse\ PGN:\ "{}});}
+\DoxyCodeLine{00603\ \ \ \ \ OutputStream-\/>println(N2kMsg.PGN);}
+\DoxyCodeLine{00604\ \ \ \}}
+\DoxyCodeLine{00605\ \}}
+\DoxyCodeLine{00606\ }
+\DoxyCodeLine{00607\ \textcolor{comment}{//*****************************************************************************}}
+\DoxyCodeLine{00608\ \textcolor{keywordtype}{void}\ DCStatus(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg)}
+\DoxyCodeLine{00609\ \{}
+\DoxyCodeLine{00610\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ SID;}
+\DoxyCodeLine{00611\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ DCInstance;}
+\DoxyCodeLine{00612\ \ \ tN2kDCType\ DCType;}
+\DoxyCodeLine{00613\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ StateOfCharge;}
+\DoxyCodeLine{00614\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ StateOfHealth;}
+\DoxyCodeLine{00615\ \ \ \textcolor{keywordtype}{double}\ TimeRemaining;}
+\DoxyCodeLine{00616\ \ \ \textcolor{keywordtype}{double}\ RippleVoltage;}
+\DoxyCodeLine{00617\ \ \ \textcolor{keywordtype}{double}\ Capacity;}
+\DoxyCodeLine{00618\ }
+\DoxyCodeLine{00619\ \ \ \textcolor{keywordflow}{if}\ (ParseN2kDCStatus(N2kMsg,\ SID,\ DCInstance,\ DCType,\ StateOfCharge,\ StateOfHealth,\ TimeRemaining,\ RippleVoltage,\ Capacity))}
+\DoxyCodeLine{00620\ \ \ \{}
+\DoxyCodeLine{00621\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}DC\ instance:\ "{}});OutputStream-\/>println(DCInstance);}
+\DoxyCodeLine{00622\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}\ \ -\/\ type:\ "{}});PrintN2kEnumType(DCType,\ OutputStream);}
+\DoxyCodeLine{00623\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}\ \ -\/\ state\ of\ charge\ (\%):\ "{}});OutputStream-\/>println(StateOfCharge);}
+\DoxyCodeLine{00624\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}\ \ -\/\ state\ of\ health\ (\%):\ "{}});OutputStream-\/>println(StateOfHealth);}
+\DoxyCodeLine{00625\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}\ \ -\/\ time\ remaining\ (h):\ "{}});OutputStream-\/>println(TimeRemaining\ /\ 60);}
+\DoxyCodeLine{00626\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}\ \ -\/\ ripple\ voltage:\ "{}});OutputStream-\/>println(RippleVoltage);}
+\DoxyCodeLine{00627\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}\ \ -\/\ capacity:\ "{}});OutputStream-\/>println(Capacity);}
+\DoxyCodeLine{00628\ \ \ \}}
+\DoxyCodeLine{00629\ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00630\ \ \ \{}
+\DoxyCodeLine{00631\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Failed\ to\ parse\ PGN:\ "{}});}
+\DoxyCodeLine{00632\ \ \ \ \ OutputStream-\/>println(N2kMsg.PGN);}
+\DoxyCodeLine{00633\ \ \ \}}
+\DoxyCodeLine{00634\ \}}
+\DoxyCodeLine{00635\ }
+\DoxyCodeLine{00636\ \textcolor{comment}{//*****************************************************************************}}
+\DoxyCodeLine{00637\ \textcolor{keywordtype}{void}\ Speed(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg)}
+\DoxyCodeLine{00638\ \{}
+\DoxyCodeLine{00639\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ SID;}
+\DoxyCodeLine{00640\ \ \ \textcolor{keywordtype}{double}\ SOW;}
+\DoxyCodeLine{00641\ \ \ \textcolor{keywordtype}{double}\ SOG;}
+\DoxyCodeLine{00642\ \ \ tN2kSpeedWaterReferenceType\ SWRT;}
+\DoxyCodeLine{00643\ }
+\DoxyCodeLine{00644\ \ \ \textcolor{keywordflow}{if}\ (ParseN2kBoatSpeed(N2kMsg,\ SID,\ SOW,\ SOG,\ SWRT))}
+\DoxyCodeLine{00645\ \ \ \{}
+\DoxyCodeLine{00646\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Boat\ speed:"{}});}
+\DoxyCodeLine{00647\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ SOW:"{}},\ N2kIsNA(SOW)\ ?\ SOW\ :\ msToKnots(SOW));}
+\DoxyCodeLine{00648\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{},\ SOG:"{}},\ N2kIsNA(SOG)\ ?\ SOG\ :\ msToKnots(SOG));}
+\DoxyCodeLine{00649\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{},\ "{}});}
+\DoxyCodeLine{00650\ \ \ \ \ PrintN2kEnumType(SWRT,\ OutputStream,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00651\ \ \ \}}
+\DoxyCodeLine{00652\ \}}
+\DoxyCodeLine{00653\ }
+\DoxyCodeLine{00654\ \textcolor{comment}{//*****************************************************************************}}
+\DoxyCodeLine{00655\ \textcolor{keywordtype}{void}\ WaterDepth(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg)}
+\DoxyCodeLine{00656\ \{}
+\DoxyCodeLine{00657\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ SID;}
+\DoxyCodeLine{00658\ \ \ \textcolor{keywordtype}{double}\ DepthBelowTransducer;}
+\DoxyCodeLine{00659\ \ \ \textcolor{keywordtype}{double}\ Offset;}
+\DoxyCodeLine{00660\ }
+\DoxyCodeLine{00661\ \ \ \textcolor{keywordflow}{if}\ (ParseN2kWaterDepth(N2kMsg,\ SID,\ DepthBelowTransducer,\ Offset))}
+\DoxyCodeLine{00662\ \ \ \{}
+\DoxyCodeLine{00663\ \ \ \ \ \textcolor{keywordflow}{if}\ (N2kIsNA(Offset)\ ||\ Offset\ ==\ 0)}
+\DoxyCodeLine{00664\ \ \ \ \ \{}
+\DoxyCodeLine{00665\ \ \ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}Depth\ below\ transducer"{}},\ DepthBelowTransducer);}
+\DoxyCodeLine{00666\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (N2kIsNA(Offset))}
+\DoxyCodeLine{00667\ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00668\ \ \ \ \ \ \ \ \ OutputStream-\/>println(\textcolor{stringliteral}{"{},\ offset\ not\ available"{}});}
+\DoxyCodeLine{00669\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00670\ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00671\ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00672\ \ \ \ \ \ \ \ \ OutputStream-\/>println(\textcolor{stringliteral}{"{},\ offset=0"{}});}
+\DoxyCodeLine{00673\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00674\ \ \ \ \ \}}
+\DoxyCodeLine{00675\ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00676\ \ \ \ \ \{}
+\DoxyCodeLine{00677\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (Offset\ >\ 0)}
+\DoxyCodeLine{00678\ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00679\ \ \ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Water\ depth:"{}});}
+\DoxyCodeLine{00680\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00681\ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00682\ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00683\ \ \ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Depth\ below\ keel:"{}});}
+\DoxyCodeLine{00684\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00685\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!N2kIsNA(DepthBelowTransducer))}
+\DoxyCodeLine{00686\ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00687\ \ \ \ \ \ \ \ \ OutputStream-\/>println(DepthBelowTransducer\ +\ Offset);}
+\DoxyCodeLine{00688\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00689\ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00690\ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00691\ \ \ \ \ \ \ \ \ OutputStream-\/>println(\textcolor{stringliteral}{"{}\ not\ available"{}});}
+\DoxyCodeLine{00692\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00693\ \ \ \ \ \}}
+\DoxyCodeLine{00694\ \ \ \}}
+\DoxyCodeLine{00695\ \}}
+\DoxyCodeLine{00696\ }
+\DoxyCodeLine{00697\ \textcolor{comment}{//*****************************************************************************}}
+\DoxyCodeLine{00698\ \textcolor{keywordtype}{void}\ printLLNumber(Stream\ *OutputStream,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}\ \textcolor{keywordtype}{long}\ n,\ uint8\_t\ base\ =\ 10)}
+\DoxyCodeLine{00699\ \{}
+\DoxyCodeLine{00700\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ buf[16\ *\ \textcolor{keyword}{sizeof}(long)];\ \textcolor{comment}{//\ Assumes\ 8-\/bit\ chars.}}
+\DoxyCodeLine{00701\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}\ \textcolor{keywordtype}{long}\ i\ =\ 0;}
+\DoxyCodeLine{00702\ }
+\DoxyCodeLine{00703\ \ \ \textcolor{keywordflow}{if}\ (n\ ==\ 0)}
+\DoxyCodeLine{00704\ \ \ \{}
+\DoxyCodeLine{00705\ \ \ \ \ OutputStream-\/>print(\textcolor{charliteral}{'0'});}
+\DoxyCodeLine{00706\ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00707\ \ \ \}}
+\DoxyCodeLine{00708\ }
+\DoxyCodeLine{00709\ \ \ \textcolor{keywordflow}{while}\ (n\ >\ 0)}
+\DoxyCodeLine{00710\ \ \ \{}
+\DoxyCodeLine{00711\ \ \ \ \ buf[i++]\ =\ n\ \%\ base;}
+\DoxyCodeLine{00712\ \ \ \ \ n\ /=\ base;}
+\DoxyCodeLine{00713\ \ \ \}}
+\DoxyCodeLine{00714\ }
+\DoxyCodeLine{00715\ \ \ \textcolor{keywordflow}{for}\ (;\ i\ >\ 0;\ i-\/-\/)}
+\DoxyCodeLine{00716\ \ \ \ \ OutputStream-\/>print(}
+\DoxyCodeLine{00717\ \ \ \ \ \ \ \ \ (\textcolor{keywordtype}{char})(buf[i\ -\/\ 1]\ <\ 10\ ?\ }
+\DoxyCodeLine{00718\ \ \ \ \ \ \ \ \ \textcolor{charliteral}{'0'}\ +\ buf[i\ -\/\ 1]\ :\ }
+\DoxyCodeLine{00719\ \ \ \ \ \ \ \ \ \textcolor{charliteral}{'A'}\ +\ buf[i\ -\/\ 1]\ -\/\ 10));}
+\DoxyCodeLine{00720\ \}}
+\DoxyCodeLine{00721\ }
+\DoxyCodeLine{00722\ \textcolor{comment}{//*****************************************************************************}}
+\DoxyCodeLine{00723\ \textcolor{keywordtype}{void}\ BinaryStatusFull(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg)}
+\DoxyCodeLine{00724\ \{}
+\DoxyCodeLine{00725\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ BankInstance;}
+\DoxyCodeLine{00726\ \ \ tN2kBinaryStatus\ BankStatus;}
+\DoxyCodeLine{00727\ }
+\DoxyCodeLine{00728\ \ \ \textcolor{keywordflow}{if}\ (ParseN2kBinaryStatus(N2kMsg,\ BankInstance,\ BankStatus))}
+\DoxyCodeLine{00729\ \ \ \{}
+\DoxyCodeLine{00730\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Binary\ status\ for\ bank\ "{}});OutputStream-\/>print(BankInstance);OutputStream-\/>println(\textcolor{stringliteral}{"{}:"{}});}
+\DoxyCodeLine{00731\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}\ \ "{}});\ \textcolor{comment}{//\ printLLNumber(OutputStream,BankStatus,16);}}
+\DoxyCodeLine{00732\ \ \ \ \ \textcolor{keywordflow}{for}\ (uint8\_t\ i\ =\ 1;\ i\ <=\ 28;\ i++)}
+\DoxyCodeLine{00733\ \ \ \ \ \{}
+\DoxyCodeLine{00734\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (i\ >\ 1)}
+\DoxyCodeLine{00735\ \ \ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{},"{}});}
+\DoxyCodeLine{00736\ \ \ \ \ \ \ PrintN2kEnumType(N2kGetStatusOnBinaryStatus(BankStatus,\ i),\ OutputStream,\ \textcolor{keyword}{false});}
+\DoxyCodeLine{00737\ \ \ \ \ \}}
+\DoxyCodeLine{00738\ \ \ \ \ OutputStream-\/>println();}
+\DoxyCodeLine{00739\ \ \ \}}
+\DoxyCodeLine{00740\ \}}
+\DoxyCodeLine{00741\ }
+\DoxyCodeLine{00742\ \textcolor{comment}{//*****************************************************************************}}
+\DoxyCodeLine{00743\ \textcolor{keywordtype}{void}\ BinaryStatus(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg)}
+\DoxyCodeLine{00744\ \{}
+\DoxyCodeLine{00745\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ BankInstance;}
+\DoxyCodeLine{00746\ \ \ tN2kOnOff\ Status1,\ Status2,\ Status3,\ Status4;}
+\DoxyCodeLine{00747\ }
+\DoxyCodeLine{00748\ \ \ \textcolor{keywordflow}{if}\ (ParseN2kBinaryStatus(N2kMsg,\ BankInstance,\ Status1,\ Status2,\ Status3,\ Status4))}
+\DoxyCodeLine{00749\ \ \ \{}
+\DoxyCodeLine{00750\ \ \ \ \ \textcolor{keywordflow}{if}\ (BankInstance\ >\ 2)}
+\DoxyCodeLine{00751\ \ \ \ \ \{\ \textcolor{comment}{//\ note\ that\ this\ is\ only\ for\ testing\ different\ methods.\ MessageSender.ini\ sends\ 4\ status\ for\ instace\ 2}}
+\DoxyCodeLine{00752\ \ \ \ \ \ \ BinaryStatusFull(N2kMsg);}
+\DoxyCodeLine{00753\ \ \ \ \ \}}
+\DoxyCodeLine{00754\ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00755\ \ \ \ \ \{}
+\DoxyCodeLine{00756\ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Binary\ status\ for\ bank\ "{}});OutputStream-\/>print(BankInstance);OutputStream-\/>println(\textcolor{stringliteral}{"{}:"{}});}
+\DoxyCodeLine{00757\ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}\ \ Status1="{}});PrintN2kEnumType(Status1,\ OutputStream,\ \textcolor{keyword}{false});}
+\DoxyCodeLine{00758\ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{},\ Status2="{}});PrintN2kEnumType(Status2,\ OutputStream,\ \textcolor{keyword}{false});}
+\DoxyCodeLine{00759\ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{},\ Status3="{}});PrintN2kEnumType(Status3,\ OutputStream,\ \textcolor{keyword}{false});}
+\DoxyCodeLine{00760\ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{},\ Status4="{}});PrintN2kEnumType(Status4,\ OutputStream,\ \textcolor{keyword}{false});}
+\DoxyCodeLine{00761\ \ \ \ \ \ \ OutputStream-\/>println();}
+\DoxyCodeLine{00762\ \ \ \ \ \}}
+\DoxyCodeLine{00763\ \ \ \}}
+\DoxyCodeLine{00764\ \}}
+\DoxyCodeLine{00765\ }
+\DoxyCodeLine{00766\ \textcolor{comment}{//*****************************************************************************}}
+\DoxyCodeLine{00767\ \textcolor{keywordtype}{void}\ FluidLevel(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg)}
+\DoxyCodeLine{00768\ \{}
+\DoxyCodeLine{00769\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ Instance;}
+\DoxyCodeLine{00770\ \ \ tN2kFluidType\ FluidType;}
+\DoxyCodeLine{00771\ \ \ \textcolor{keywordtype}{double}\ Level\ =\ 0;}
+\DoxyCodeLine{00772\ \ \ \textcolor{keywordtype}{double}\ Capacity\ =\ 0;}
+\DoxyCodeLine{00773\ }
+\DoxyCodeLine{00774\ \ \ \textcolor{keywordflow}{if}\ (ParseN2kFluidLevel(N2kMsg,\ Instance,\ FluidType,\ Level,\ Capacity))}
+\DoxyCodeLine{00775\ \ \ \{}
+\DoxyCodeLine{00776\ \ \ \ \ \textcolor{keywordflow}{switch}\ (FluidType)}
+\DoxyCodeLine{00777\ \ \ \ \ \{}
+\DoxyCodeLine{00778\ \ \ \ \ \textcolor{keywordflow}{case}\ N2kft\_Fuel:}
+\DoxyCodeLine{00779\ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Fuel\ level\ :"{}});}
+\DoxyCodeLine{00780\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00781\ \ \ \ \ \textcolor{keywordflow}{case}\ N2kft\_Water:}
+\DoxyCodeLine{00782\ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Water\ level\ :"{}});}
+\DoxyCodeLine{00783\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00784\ \ \ \ \ \textcolor{keywordflow}{case}\ N2kft\_GrayWater:}
+\DoxyCodeLine{00785\ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Gray\ water\ level\ :"{}});}
+\DoxyCodeLine{00786\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00787\ \ \ \ \ \textcolor{keywordflow}{case}\ N2kft\_LiveWell:}
+\DoxyCodeLine{00788\ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Live\ well\ level\ :"{}});}
+\DoxyCodeLine{00789\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00790\ \ \ \ \ \textcolor{keywordflow}{case}\ N2kft\_Oil:}
+\DoxyCodeLine{00791\ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Oil\ level\ :"{}});}
+\DoxyCodeLine{00792\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00793\ \ \ \ \ \textcolor{keywordflow}{case}\ N2kft\_BlackWater:}
+\DoxyCodeLine{00794\ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Black\ water\ level\ :"{}});}
+\DoxyCodeLine{00795\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00796\ \ \ \ \ \textcolor{keywordflow}{case}\ N2kft\_FuelGasoline:}
+\DoxyCodeLine{00797\ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Gasoline\ level\ :"{}});}
+\DoxyCodeLine{00798\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00799\ \ \ \ \ \textcolor{keywordflow}{case}\ N2kft\_Error:}
+\DoxyCodeLine{00800\ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Error\ level\ :"{}});}
+\DoxyCodeLine{00801\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00802\ \ \ \ \ \textcolor{keywordflow}{case}\ N2kft\_Unavailable:}
+\DoxyCodeLine{00803\ \ \ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Unknown\ level\ :"{}});}
+\DoxyCodeLine{00804\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00805\ \ \ \ \ \}}
+\DoxyCodeLine{00806\ \ \ \ \ OutputStream-\/>print(Level);}
+\DoxyCodeLine{00807\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}\%"{}});}
+\DoxyCodeLine{00808\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}\ ("{}});}
+\DoxyCodeLine{00809\ \ \ \ \ OutputStream-\/>print(Capacity\ *\ Level\ /\ 100);}
+\DoxyCodeLine{00810\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}l)"{}});}
+\DoxyCodeLine{00811\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}\ capacity\ :"{}});}
+\DoxyCodeLine{00812\ \ \ \ \ OutputStream-\/>println(Capacity);}
+\DoxyCodeLine{00813\ \ \ \}}
+\DoxyCodeLine{00814\ \}}
+\DoxyCodeLine{00815\ }
+\DoxyCodeLine{00816\ \textcolor{comment}{//*****************************************************************************}}
+\DoxyCodeLine{00817\ \textcolor{keywordtype}{void}\ Attitude(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg)}
+\DoxyCodeLine{00818\ \{}
+\DoxyCodeLine{00819\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ SID;}
+\DoxyCodeLine{00820\ \ \ \textcolor{keywordtype}{double}\ Yaw;}
+\DoxyCodeLine{00821\ \ \ \textcolor{keywordtype}{double}\ Pitch;}
+\DoxyCodeLine{00822\ \ \ \textcolor{keywordtype}{double}\ Roll;}
+\DoxyCodeLine{00823\ }
+\DoxyCodeLine{00824\ \ \ \textcolor{keywordflow}{if}\ (ParseN2kAttitude(N2kMsg,\ SID,\ Yaw,\ Pitch,\ Roll))}
+\DoxyCodeLine{00825\ \ \ \{}
+\DoxyCodeLine{00826\ \ \ \ \ OutputStream-\/>println(\textcolor{stringliteral}{"{}Attitude:"{}});}
+\DoxyCodeLine{00827\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ SID:\ "{}},\ SID,\ 0,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00828\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ Yaw\ (deg):\ "{}},\ Yaw,\ \&RadToDeg,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00829\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ Pitch\ (deg):\ "{}},\ Pitch,\ \&RadToDeg,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00830\ \ \ \ \ PrintLabelValWithConversionCheckUnDef(\textcolor{stringliteral}{"{}\ \ Roll\ (deg):\ "{}},\ Roll,\ \&RadToDeg,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00831\ \ \ \}}
+\DoxyCodeLine{00832\ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00833\ \ \ \{}
+\DoxyCodeLine{00834\ \ \ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}Failed\ to\ parse\ PGN:\ "{}});}
+\DoxyCodeLine{00835\ \ \ \ \ OutputStream-\/>println(N2kMsg.PGN);}
+\DoxyCodeLine{00836\ \ \ \}}
+\DoxyCodeLine{00837\ \}}
+\DoxyCodeLine{00838\ }
+\DoxyCodeLine{00839\ \textcolor{comment}{//\ NMEA\ 2000\ message\ handler}}
+\DoxyCodeLine{00845\ \textcolor{keywordtype}{void}\ HandleNMEA2000Msg(\textcolor{keyword}{const}\ tN2kMsg\ \&N2kMsg)}
+\DoxyCodeLine{00846\ \{}
+\DoxyCodeLine{00847\ \ \ \textcolor{keywordtype}{int}\ iHandler;}
+\DoxyCodeLine{00848\ }
+\DoxyCodeLine{00849\ \ \ \textcolor{comment}{//\ Find\ handler}}
+\DoxyCodeLine{00850\ \ \ OutputStream-\/>print(\textcolor{stringliteral}{"{}In\ Main\ Handler:\ "{}});}
+\DoxyCodeLine{00851\ \ \ OutputStream-\/>println(N2kMsg.PGN);}
+\DoxyCodeLine{00852\ }
+\DoxyCodeLine{00853\ \ \ \textcolor{keywordflow}{for}\ (iHandler\ =\ 0;\ NMEA2000Handlers[iHandler].PGN\ !=\ 0\ \&\&\ !(N2kMsg.PGN\ ==\ NMEA2000Handlers[iHandler].PGN);\ iHandler++)}
+\DoxyCodeLine{00854\ \ \ \ \ ;}
+\DoxyCodeLine{00855\ }
+\DoxyCodeLine{00856\ \ \ \textcolor{comment}{//\ If\ handler\ is\ in\ list,\ call\ it.}}
+\DoxyCodeLine{00857\ \ \ \textcolor{keywordflow}{if}\ (NMEA2000Handlers[iHandler].PGN\ !=\ 0)}
+\DoxyCodeLine{00858\ \ \ \{}
+\DoxyCodeLine{00859\ \ \ \ \ NMEA2000Handlers[iHandler].Handler(N2kMsg);}
+\DoxyCodeLine{00860\ \ \ \}}
+\DoxyCodeLine{00861\ \}}
+\DoxyCodeLine{00862\ }
+\DoxyCodeLine{00863\ \textcolor{comment}{//*****************************************************************************}}
+\DoxyCodeLine{00864\ \textcolor{keywordtype}{void}\ loop()}
+\DoxyCodeLine{00865\ \{}
+\DoxyCodeLine{00866\ \ \ NMEA2000.ParseMessages();}
+\DoxyCodeLine{00867\ \}}
+
+\end{DoxyCode}
