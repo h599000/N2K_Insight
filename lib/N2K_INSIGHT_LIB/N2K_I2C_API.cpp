@@ -3,17 +3,12 @@
 
 #define REQUEST_MESSAGE_LENGTH 4
 
+
 I2CRequestHandler I2CRequestHandlers[] = {
-{0, &status},
-{1, &newPGN},
-{8, &spesificPGN}
+    {0, &status},
+    {1, &newPGN},
+    {8, &spesificPGN}
 };
-
-void requestData()
-{
-    //Wire.write(0);
-}
-
 
 void HandleI2CMessage(byte* request)
 {
@@ -23,7 +18,7 @@ void HandleI2CMessage(byte* request)
     
     for (int p = 1; p <= REQUEST_MESSAGE_LENGTH; p++) 
     {
-        pgn = (pgn << 8) | request[p];
+        pgn = (pgn << 8) | request[p];  // Bitshifting to get the PGN from the three bytes in the request
     }
 
     I2CRequestHandlers[i].Handler(pgn);
@@ -33,7 +28,7 @@ void HandleI2CMessage(byte* request)
 void status(long pgn)
 {
     byte status = 8;
-    Wire.slaveWrite(&status, 1);
+    Wire.slaveWrite(&status, 1);    
 }
 
 void newPGN(long pgn)
@@ -42,7 +37,6 @@ void newPGN(long pgn)
     
     Wire.slaveWrite(&status, 1);
 }
-
 
 void spesificPGN(long pgn)
 {
@@ -54,10 +48,14 @@ void spesificPGN(long pgn)
         response.getBytes(bytearray + 2, length + 1);
         bytearray[0] = (byte) length >> 8;
         bytearray[1] = (byte) length;
+        Wire.flush();
         Wire.slaveWrite(bytearray, length + 2);
     };
 }
 
+void requestData()
+{
+}
 
 void receiveData(int byteCount)
 {
@@ -69,7 +67,4 @@ void receiveData(int byteCount)
         index++;
     };
     HandleI2CMessage(request);
-    
-
-
 }
