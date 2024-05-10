@@ -1,0 +1,75 @@
+\doxysection{N2\+K\+\_\+composed Class Reference}
+\hypertarget{class_n2_k__composed}{}\label{class_n2_k__composed}\index{N2K\_composed@{N2K\_composed}}
+
+
+Constructor for the \doxylink{class_n2_k__composed}{N2\+K\+\_\+composed} class, which initializes an instance with data from a t\+N2k\+Msg.  
+
+
+
+
+{\ttfamily \#include $<$N2\+K\+\_\+composed.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_n2_k__composed_af3c8a85e12cd97919f5010f0f96d42b9}\label{class_n2_k__composed_af3c8a85e12cd97919f5010f0f96d42b9} 
+{\bfseries N2\+K\+\_\+composed} (t\+N2k\+Msg msg)
+\item 
+String \mbox{\hyperlink{class_n2_k__composed_ad87e31d97c3e5db89aeee596388d3e49}{N2\+Kto\+JSON}} ()
+\begin{DoxyCompactList}\small\item\em Converts the NMEA 2000 message data to a JSON formatted string. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_n2_k__composed_a914982ca239ca7cfa9a1240a6fc3b756}\label{class_n2_k__composed_a914982ca239ca7cfa9a1240a6fc3b756} 
+long {\bfseries PGN}
+\begin{DoxyCompactList}\small\item\em Parameter Group Number (PGN) of the NMEA2000 message. \end{DoxyCompactList}\item 
+\Hypertarget{class_n2_k__composed_a93240204c1b7a29cf9d0e1dfb3525a45}\label{class_n2_k__composed_a93240204c1b7a29cf9d0e1dfb3525a45} 
+unsigned char {\bfseries Source}
+\begin{DoxyCompactList}\small\item\em Source of the NMEA2000 message. \end{DoxyCompactList}\item 
+\Hypertarget{class_n2_k__composed_a86539f0586ebdfe949344fbfc15a9599}\label{class_n2_k__composed_a86539f0586ebdfe949344fbfc15a9599} 
+int {\bfseries Data\+Len}
+\begin{DoxyCompactList}\small\item\em t\+N2k\+Msg\+::\+Data of this message \end{DoxyCompactList}\item 
+\Hypertarget{class_n2_k__composed_a4150e97217ab86453779b66a512e6ff9}\label{class_n2_k__composed_a4150e97217ab86453779b66a512e6ff9} 
+unsigned char {\bfseries Data} \mbox{[}\mbox{\hyperlink{class_n2_k__composed_a66e3c0c621e14fe2a8237a213a718357}{Max\+Data\+Len}}\mbox{]}
+\begin{DoxyCompactList}\small\item\em Byte array which carries all the data of the NMEA2000 message. \end{DoxyCompactList}\item 
+\Hypertarget{class_n2_k__composed_ac85a07a28e93ed70fea2b8ff8ca856b5}\label{class_n2_k__composed_ac85a07a28e93ed70fea2b8ff8ca856b5} 
+unsigned long {\bfseries Msg\+Time}
+\begin{DoxyCompactList}\small\item\em timestamp (ms since start \mbox{[}max 49days\mbox{]}) of the NMEA2000 message \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_n2_k__composed_a66e3c0c621e14fe2a8237a213a718357}\label{class_n2_k__composed_a66e3c0c621e14fe2a8237a213a718357} 
+static const int {\bfseries Max\+Data\+Len} = 223
+\begin{DoxyCompactList}\small\item\em Maximum number of bytes that can be stored in the data buffer. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Constructor for the \doxylink{class_n2_k__composed}{N2\+K\+\_\+composed} class, which initializes an instance with data from a t\+N2k\+Msg. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em msg} & The t\+N2k\+Msg from which to initialize the \doxylink{class_n2_k__composed}{N2\+K\+\_\+composed} object. It contains the raw data and metadata for an NMEA2000 message. \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_n2_k__composed_ad87e31d97c3e5db89aeee596388d3e49}\label{class_n2_k__composed_ad87e31d97c3e5db89aeee596388d3e49} 
+\index{N2K\_composed@{N2K\_composed}!N2KtoJSON@{N2KtoJSON}}
+\index{N2KtoJSON@{N2KtoJSON}!N2K\_composed@{N2K\_composed}}
+\doxysubsubsection{\texorpdfstring{N2KtoJSON()}{N2KtoJSON()}}
+{\footnotesize\ttfamily String N2\+K\+\_\+composed\+::\+N2\+Kto\+JSON (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Converts the NMEA 2000 message data to a JSON formatted string. 
+
+\begin{DoxyReturn}{Returns}
+A String containing the JSON formatted representation of the \doxylink{class_n2_k__composed}{N2\+K\+\_\+composed} object. This string includes the PGN, Source, Msg\+Time, and Data fields. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+lib/\+N2\+K\+\_\+\+INSIGHT\+\_\+\+LIB/N2\+K\+\_\+composed.\+h\item 
+lib/\+N2\+K\+\_\+\+INSIGHT\+\_\+\+LIB/N2\+K\+\_\+composed.\+cpp\end{DoxyCompactItemize}

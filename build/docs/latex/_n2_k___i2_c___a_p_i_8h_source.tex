@@ -1,0 +1,34 @@
+\doxysection{N2\+K\+\_\+\+I2\+C\+\_\+\+API.\+h}
+\hypertarget{_n2_k___i2_c___a_p_i_8h_source}{}\label{_n2_k___i2_c___a_p_i_8h_source}\index{lib/N2K\_INSIGHT\_LIB/N2K\_I2C\_API.h@{lib/N2K\_INSIGHT\_LIB/N2K\_I2C\_API.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ N2K\_I2C\_API\_H}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ N2K\_I2C\_API\_H}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <Arduino.h>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <Wire.h>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <N2K\_decomposed.h>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <N2K\_composed.h>}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{keyword}{extern}\ \mbox{\hyperlink{class_p_g_n129026__d}{PGN129026\_d}}*\ n2kCOGSOG;}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00015\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\{}
+\DoxyCodeLine{00016\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ request;}
+\DoxyCodeLine{00017\ \ \ void\ (*Handler)(\textcolor{keyword}{const}\ \textcolor{keywordtype}{long}\ PGN);\ }
+\DoxyCodeLine{00018\ \}\ \mbox{\hyperlink{struct_i2_c_request_handler}{I2CRequestHandler}};}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00025\ \textcolor{keyword}{extern}\ \mbox{\hyperlink{struct_i2_c_request_handler}{I2CRequestHandler}}\ I2CRequestHandlers[];}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00031\ \textcolor{keywordtype}{void}\ requestData();}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00040\ \textcolor{keywordtype}{void}\ receiveData(\textcolor{keywordtype}{int}\ byteCount);}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00047\ \textcolor{keywordtype}{void}\ status(\textcolor{keywordtype}{long}\ pgn);}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00056\ \textcolor{keywordtype}{void}\ newPGN(\textcolor{keywordtype}{long}\ pgn);}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00065\ \textcolor{keywordtype}{void}\ spesificPGN(\textcolor{keywordtype}{long}\ pgn);}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}
